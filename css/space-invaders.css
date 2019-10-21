@@ -1,0 +1,27 @@
+.space-invaders{
+  height: 655px;
+  width: 600px;
+  position: relative;
+  margin: 0 auto;
+}
+
+.player {
+  height: 73px;
+  width: 49px;
+  background: url("../images/star-wars-sprite.png");
+  position: absolute;
+}
+
+.alien{
+  z-index: 20;
+}
+
+/*.alien-position{*/
+  /*height: 270px;*/
+  /*width: 370px;*/
+  /*background: red;*/
+  /*position: absolute;*/
+  /*top: 93px;*/
+  /*left: 115px;*/
+  /*z-index: 10;*/
+/*}*/
