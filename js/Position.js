@@ -15,6 +15,8 @@ class Position {
     this.numberY = 2;
     this.offsetX = 5;
     this.offsetY = 5;
+    this.positionsX = [319, 356, 393, 430, 467, 281, 244, 207, 170, 133];
+    this.positionsY = [309, 255, 201, 147, 93];
   }
 
   move(){

@@ -1,6 +1,7 @@
 import Pattern from '../js/Pattern.js';
+import Alien from '../js/Alien.js';
 
-class Alien {
+class AlienChild {
   constructor(parentElement) {
     this.parentElement = parentElement;
     this.init();
@@ -11,7 +12,6 @@ class Alien {
     this.height = 44;
     this.isInPosition = false;
     this.isAllPatternComplete = false;
-    this.isChildMoveDownPatternComplete = false;
     this.isMoveDownPatternComplete = false;
     this.isMovingDown = false;
     this.alienNumber = 0;
@@ -41,7 +41,7 @@ class Alien {
     this.pattern = new Pattern();
   }
 
-  createAlien(size, type, pattern = null, isChild = false, properties = null, parentPositionX = null, parentPositionY = null) {
+  createAlien(size, type, pattern = null, isChild = false, properties = null) {
     this.size = size;
     this.type = type;
     this.isChild = isChild;
@@ -49,9 +49,6 @@ class Alien {
     this.alienElement.classList.add('alien');
 
     if(this.isChild){
-      this.parentAlienPositionX = parentPositionX;
-      this.parentAlienPositionY = parentPositionY;
-
       this.properties = properties;
       this.patternStyle = this.properties.pattern;
       this.alienElement.style.width = this.properties.width + 'px';
@@ -152,34 +149,28 @@ class Alien {
   }
 
   moveAlienChild(playerPositionX){
-    if (!this.isChildMoveDownPatternComplete) {
-      this.setPlayerPosition(playerPositionX);
-      this.coOrdinates = this.getChildPatternCoOrdinates();
-      if(this.coOrdinates) {
-        this.setPosition();
-        this.draw();
-      }
-    }
+    this.setPlayerPosition(playerPositionX);
+    this.coOrdinates = this.getChildPatternCoOrdinates();
+    this.setPosition();
+    this.draw();
   }
 
   getChildPatternCoOrdinates(){
     if (this.t <= 1) {
       this.t += this.tOffset;
     } else {
-      if (this.patternCounter >= this.pattern.getAlienChildPatterns(this.parentAlienPositionX, this.parentAlienPositionY, this.playerPositionX)[this.properties.pattern].length - 1) {
-        this.isChildMoveDownPatternComplete = true;
+      if (this.patternCounter >= this.pattern.getAlienChildPatterns(this.positionX, this.positionY, this.playerPositionX)[this.properties.pattern].length - 1) {
+        // this.isMoveDownPatternComplete = true;
+        this.isInPosition = false;
       }
 
-      if (this.pattern.getAlienChildPatterns(this.parentAlienPositionX, this.parentAlienPositionY, this.playerPositionX)[this.properties.pattern].length > 1 &&
-        !this.isChildMoveDownPatternComplete) {
+      if (this.pattern.getAlienChildPatterns(this.positionX, this.positionY, this.playerPositionX)[this.properties.pattern].length > 1) {
         this.patternCounter++;
         this.t = 0;
       }
     }
-    if (!this.isChildMoveDownPatternComplete) {
-      return this.pattern.generateCoOrdinates(this.t, this.pattern.getAlienChildPatterns(this.parentAlienPositionX, this.parentAlienPositionY,
-        this.playerPositionX)[this.properties.pattern][this.patternCounter]);
-    }
+    return this.pattern.generateCoOrdinates(this.t, this.pattern.getAlienChildPatterns(this.positionX, this.positionY,
+      this.playerPositionX)[this.properties.pattern][this.patternCounter]);
   }
 
   setPlayerPosition(playerPositionX) {
@@ -231,7 +222,6 @@ class Alien {
     } else {
       if (this.patternCounter >= this.pattern.moveDownPatterns(this.finalPositionX, this.finalPositionY).length - 1) {
         this.isMoveDownPatternComplete = true;
-        this.isMovingDown = false;
         this.isInPosition = false;
       }
 
@@ -254,12 +244,7 @@ class Alien {
 
   explode() {
     this.alienElement.style.transition = 'none';
-    if(!this.isChild) {
-      this.alienElement.style.background = 'url(images/alien-explosion.png)';
-    }else{
-      this.alienElement.style.background = 'url(images/alien-child-explosion.png)';
-
-    }
+    this.alienElement.style.background = 'url(images/alien-explosion.png)';
   }
 
   checkIsPlayerClose(playerPositionX) {
@@ -307,7 +292,7 @@ class Alien {
           score: 20,
           health: 2,
           gunType: 2,
-          special: 're-generate',
+          special: 'generate-two',
           children: [
             {
               positionX: -77,
@@ -337,7 +322,7 @@ class Alien {
           score: 20,
           health: 2,
           gunType: 2,
-          special: 're-generate',
+          special: 'generate-two',
           children: [
             {
               positionX: -95,

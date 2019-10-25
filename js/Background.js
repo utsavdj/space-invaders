@@ -1,6 +1,10 @@
 class Background {
   constructor(parentElement) {
     this.parentElement = parentElement;
+    this.init();
+  }
+
+  init(){
     this.width = this.parentElement.clientWidth;
     this.height = this.parentElement.clientHeight;
     this.backgroundMovementCounter = 0;

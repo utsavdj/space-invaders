@@ -5,7 +5,10 @@ class Player {
     this.height = 73;
     this.positionX = 276;
     this.positionY = 572;
-
+    this.isExploded = false;
+    this.isBulletFired = false;
+    this.bulletFiredTimeout = 50;
+    this.bulletFiredCounter = 0;
     this.createPlayer();
   }
 
@@ -18,7 +21,7 @@ class Player {
     this.playerElement.style.position = 'absolute';
     this.playerElement.style.top = this.positionY + 'px';
     this.playerElement.style.left = this.positionX + 'px';
-    // this.playerElement.style.transition = 'all 0.5s';
+    this.playerElement.style.zIndex = '10';
     this.parentElement.appendChild(this.playerElement);
   }
 
@@ -37,6 +40,10 @@ class Player {
   draw() {
     this.playerElement.style.top = this.positionY + 'px';
     this.playerElement.style.left = this.positionX + 'px';
+  }
+
+  explode() {
+    this.playerElement.style.background = 'url(images/player-explode.png)';
   }
 
 }

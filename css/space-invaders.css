@@ -1,8 +1,39 @@
-.space-invaders{
+.star-invaders-container{
+  margin: auto;
   height: 655px;
-  width: 600px;
+}
+.star-invaders{
+  width: 540px;
   position: relative;
-  margin: 0 auto;
+  overflow: hidden;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  float: left;
+}
+
+.score-board{
+  width: 150px;
+  float: right;
+  border-right: 2px solid #ffffff;
+}
+
+.boss-health-text{
+  color: #ffffff;
+  font-size: 18px;
+  padding: 15px;
+  font-weight: bold;
+}
+
+.boss-health-container{
+  border: 2px solid #ffffff;
+  margin: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.boss-health{
+  position: absolute;
+  background-color: red;
 }
 
 .player {
@@ -13,15 +44,42 @@
 }
 
 .alien{
-  z-index: 20;
+  z-index: 10;
 }
 
-/*.alien-position{*/
-  /*height: 270px;*/
-  /*width: 370px;*/
-  /*background: red;*/
-  /*position: absolute;*/
-  /*top: 93px;*/
-  /*left: 115px;*/
-  /*z-index: 10;*/
-/*}*/
+.game-over, .level-complete{
+  color: #ffffff;
+  top: 80px;
+  padding: 40px;
+  font-size: 40px;
+  background: black;
+  border: 2px solid #ffffff;
+  font-weight: 900;
+  text-align: center;
+}
+
+.game-over{
+  left: 116px;
+}
+
+.level-complete{
+  left: 41px;
+}
+
+.retry-btn, .menu-btn{
+  border: 1px solid #ffffff;
+  background-color: red;
+  color: white;
+  padding: 5px 15px;
+  font-size: 18px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.retry-btn{
+  margin-right: 10px;
+}
+
+.menu-btn{
+  margin-left: 10px;
+}
