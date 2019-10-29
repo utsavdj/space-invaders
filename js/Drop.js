@@ -1,33 +1,35 @@
-class Coin {
+class Drop {
   constructor(parentElement) {
     this.parentElement = parentElement;
     this.init();
   }
 
   init(){
-    this.coinSpeed = 4;
-    this.width = 15;
-    this.height = 15;
-    this.score = 10;
+    this.dropSpeed = 4;
+    this.width = 31;
+    this.height = 16;
   }
 
-  create(positionX, positionY) {
-    this.positionY = positionY;
+  createDrop(positionX, generateRandomValue) {
     this.positionX = positionX;
+    this.positionY = -this.height;
+    var dropType = generateRandomValue(0, this.drops().length);
+    this.properties = this.drops()[dropType];
+
     this.element = document.createElement('div');
     this.element.style.width = this.width + 'px';
     this.element.style.height = this.height + 'px';
     this.element.style.position = 'absolute';
-    this.element.classList.add('coin');
-    this.element.style.background = 'url(images/star-wars-sprite.png)';
-    this.element.style.backgroundPosition = '0px -146px';
+    this.element.classList.add('drop');
+    this.element.style.background = 'url(images/'+ this.properties.background +'.png)';
+    this.element.style.backgroundSize = 'contain';
     this.element.style.top = this.positionY  + 'px';
     this.element.style.left = this.positionX + 'px';
     this.parentElement.appendChild(this.element);
   }
 
   move() {
-    this.positionY += this.coinSpeed;
+    this.positionY += this.dropSpeed;
     this.update();
   }
 
@@ -37,7 +39,7 @@ class Coin {
 
   isOutOfGame() {
     var parentElementHeight = this.parentElement.offsetHeight;
-    if (parentElementHeight + this.height < this.positionY) {
+    if ((this.positionY + this.height) < 0 || parentElementHeight + this.height < this.positionY) {
       this.element.remove();
       return true;
     }
@@ -50,6 +52,29 @@ class Coin {
       this.positionY < player.positionY + player.height &&
       this.positionY + this.height > player.positionY
   }
+
+  drops() {
+    return [
+      {
+        weapon: 'normal',
+        background: 'drop-1'
+      },
+      {
+        weapon: 'spread',
+        background: 'drop-2'
+      },
+      {
+        weapon: 'shield',
+        shield: 3,
+        background: 'drop-4'
+      },
+      {
+        weapon: 'shield-breaker',
+        background: 'drop-5'
+      }
+    ]
+  }
+
 }
 
-export default Coin;
+export default Drop;

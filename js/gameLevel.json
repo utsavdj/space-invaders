@@ -1,0 +1,60 @@
+{
+  "bossHealth": 6,
+  "generateAlien": [
+    {
+      "counter": 10,
+      "aliens": [
+        {
+          "alienTypes": [
+            {
+              "size": "small",
+              "type": "one",
+              "number": 1
+            }
+          ],
+          "pattern": "leftToPosition"
+        },
+        {
+          "alienTypes": [
+            {
+              "size": "small",
+              "type": "two",
+              "number": 0
+            }
+          ],
+          "pattern": "rightToPosition"
+        }
+      ]
+    },
+    {
+      "counter": 1000,
+      "aliens": [
+        {
+          "alienTypes": [
+            {
+              "size": "medium",
+              "type": "two",
+              "number": 5
+            }
+          ],
+          "pattern": "rightToPositionTwo"
+        }
+      ]
+    },
+    {
+      "counter": 1500,
+      "aliens": [
+        {
+          "alienTypes": [
+            {
+              "size": "medium",
+              "type": "one",
+              "number": 5
+            }
+          ],
+          "pattern": "leftToPositionTwo"
+        }
+      ]
+    }
+  ]
+}

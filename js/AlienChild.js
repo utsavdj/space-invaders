@@ -32,9 +32,9 @@ class AlienChild {
     this.explosionInterval = 25;
     this.isBulletFired = false;
     this.bulletDirectionY = -1;
-    this.bulletFiredTimeout = 100;
+    this.bulletFiredInterval = 100;
     this.bulletFiredCounter = 0;
-    this.movingDownBulletTimeout = 80;
+    this.movingDownBulletInterval = 80;
     this.movingDownBulletFiredCounter = 0;
     this.specialProperty = '';
     this.isPlayerPositionSet = false;

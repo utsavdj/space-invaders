@@ -1,3 +1,30 @@
+@font-face {
+  font-family: 'star-wars';
+  src: url('../fonts/starwars.ttf');
+}
+
+.menu-container{
+  padding-top: 50px;
+  text-align: center;
+}
+
+.menu-main-text{
+  color: yellow;
+  font-family: 'star-wars', Arial, Helvetica, sans-serif;
+  font-size: 60px;
+  text-align: center;
+}
+
+.instructions{
+  text-align: center;
+  color: #ffffff;
+  padding: 20px 0;
+}
+
+.instructions li{
+  padding-bottom: 20px;
+}
+
 .star-invaders-container{
   margin: auto;
   height: 655px;
@@ -11,20 +38,44 @@
   float: left;
 }
 
-.score-board{
-  width: 150px;
-  float: right;
+.status-container{
+  width: 170px;
+  float: left;
   border-right: 2px solid #ffffff;
 }
 
-.boss-health-text{
+.buttons-container{
+  width: 170px;
+  float: left;
+  border-left: 2px solid #ffffff;
+}
+
+.boss-health-text, .boss-shield-text, .boss-text, .player-text, .player-health-text, .player-shield-text{
+  color: #ffffff;
+  text-align: center;
+}
+
+.score-text, .score, .hi-score-text, .hi-score, .level-text{
   color: #ffffff;
   font-size: 18px;
-  padding: 15px;
+  padding: 15px 15px 0 15px;
   font-weight: bold;
 }
 
-.boss-health-container{
+.level-text{
+  text-align: center;
+}
+
+.hi-score{
+  padding-bottom: 30px;
+}
+
+.boss-text, .player-text{
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.boss-health-container, .boss-shield-container, .player-health-container, .player-shield-container{
   border: 2px solid #ffffff;
   margin: auto;
   position: relative;
@@ -34,6 +85,24 @@
 .boss-health{
   position: absolute;
   background-color: red;
+}
+.player-health{
+  position: absolute;
+  background-color: blue;
+}
+.boss-shield, .player-shield{
+  position: absolute;
+  background-color: #00ffff;
+}
+
+.boss-inner-container, .player-inner-container{
+  float: left;
+  margin: 10px 0;
+}
+
+.player-container, .boss-container{
+  position: absolute;
+  padding: 15px;
 }
 
 .player {
@@ -66,20 +135,48 @@
   left: 41px;
 }
 
-.retry-btn, .menu-btn{
+.new-game-btn, .menu-btn, .pause-btn, .continue-btn, .start-btn{
   border: 1px solid #ffffff;
   background-color: red;
   color: white;
   padding: 5px 15px;
   font-size: 18px;
   cursor: pointer;
-  margin-top: 15px;
 }
 
-.retry-btn{
-  margin-right: 10px;
+.start-btn{
+  text-align: center;
 }
 
-.menu-btn{
-  margin-left: 10px;
+.new-game-btn, .menu-btn, .pause-btn {
+  margin: 15px;
+  width: 140px;
+}
+
+.loading-screen-container{
+  text-align: center;
+  margin: auto;
+  padding-top: 150px;
+}
+
+.loading-text{
+  color: #ffffff;
+  margin-bottom: 30px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.loader {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid red;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: inline-block;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

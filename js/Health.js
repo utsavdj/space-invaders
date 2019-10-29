@@ -1,14 +1,13 @@
-class Coin {
+class Health {
   constructor(parentElement) {
     this.parentElement = parentElement;
     this.init();
   }
 
   init(){
-    this.coinSpeed = 4;
+    this.healthSpeed = 4;
     this.width = 15;
     this.height = 15;
-    this.score = 10;
   }
 
   create(positionX, positionY) {
@@ -18,16 +17,16 @@ class Coin {
     this.element.style.width = this.width + 'px';
     this.element.style.height = this.height + 'px';
     this.element.style.position = 'absolute';
-    this.element.classList.add('coin');
+    this.element.classList.add('health');
     this.element.style.background = 'url(images/star-wars-sprite.png)';
-    this.element.style.backgroundPosition = '0px -146px';
+    this.element.style.backgroundPosition = '-15px -146px';
     this.element.style.top = this.positionY  + 'px';
     this.element.style.left = this.positionX + 'px';
     this.parentElement.appendChild(this.element);
   }
 
   move() {
-    this.positionY += this.coinSpeed;
+    this.positionY += this.healthSpeed;
     this.update();
   }
 
@@ -52,4 +51,4 @@ class Coin {
   }
 }
 
-export default Coin;
+export default Health;

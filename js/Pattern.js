@@ -3,16 +3,10 @@ class Pattern {
   }
 
   generateCoOrdinates(t, pattern) {
-    let cX = 3 * (pattern.p1.x - pattern.p0.x),
-      bX = 3 * (pattern.p2.x - pattern.p1.x) - cX,
-      aX = pattern.p3.x - pattern.p0.x - cX - bX;
-
-    let cY = 3 * (pattern.p1.y - pattern.p0.y),
-      bY = 3 * (pattern.p2.y - pattern.p1.y) - cY,
-      aY = pattern.p3.y - pattern.p0.y - cY - bY;
-
-    let x = (aX * Math.pow(t, 3)) + (bX * Math.pow(t, 2)) + (cX * t) + pattern.p0.x;
-    let y = (aY * Math.pow(t, 3)) + (bY * Math.pow(t, 2)) + (cY * t) + pattern.p0.y;
+    var x = (Math.pow((1-t), 3) * pattern.p1.x) + (3 *  Math.pow((1-t), 2) * t * pattern.p2.x) +
+      (3 * (1-t) * Math.pow(t, 2) * pattern.p3.x) + (Math.pow(t, 3) * pattern.p4.x);
+    var y = (Math.pow((1-t), 3) * pattern.p1.y) + (3 *  Math.pow((1-t), 2) * t * pattern.p2.y) +
+      (3 * (1-t) * Math.pow(t, 2) * pattern.p3.y) + (Math.pow(t, 3) * pattern.p4.y);
 
     return {x: x, y: y};
   }
@@ -21,21 +15,21 @@ class Pattern {
     this.currentPositionX = positionX;
     this.currentPositionY = positionY;
     return [{
-      p0: {x: this.currentPositionX, y: this.currentPositionY},
-      p1: {x: this.currentPositionX, y: this.currentPositionY - 40},
-      p2: {x: this.currentPositionX + 50, y: this.currentPositionY - 40},
-      p3: {x: this.currentPositionX + 50, y: this.currentPositionY}
+      p1: {x: this.currentPositionX, y: this.currentPositionY},
+      p2: {x: this.currentPositionX, y: this.currentPositionY - 40},
+      p3: {x: this.currentPositionX + 50, y: this.currentPositionY - 40},
+      p4: {x: this.currentPositionX + 50, y: this.currentPositionY}
     }, {
-      p0: {x: this.currentPositionX + 50, y: this.currentPositionY},
-      p1: {x: this.currentPositionX, y: this.currentPositionY + 80},
-      p2: {x: playerRecentPositionX, y: this.currentPositionY - 40},
-      p3: {x: playerRecentPositionX, y: this.currentPositionY + 200}
+      p1: {x: this.currentPositionX + 50, y: this.currentPositionY},
+      p2: {x: this.currentPositionX, y: this.currentPositionY + 80},
+      p3: {x: playerRecentPositionX, y: this.currentPositionY - 40},
+      p4: {x: playerRecentPositionX, y: this.currentPositionY + 200}
     }]
   }
 
   getAlienPositionAndInterval(){
     var numCols = 10;
-    var numRows = 2;
+    var numRows = 5;
     var xCounter = numCols/2;
     var array = [];
     var col = 0;
@@ -58,71 +52,210 @@ class Pattern {
     return array;
   }
 
-  getPatterns(){
+  getRandomAlienPatterns(){
+    return ['topLeftToBottomRight', 'topRightToBottomLeft', 'bottomLeftToTopRight', 'bottomRightToTopLeft',
+    'topLeftToBottomLeft', 'topRightToBottomRight', 'bottomLeftToTopLeft', 'bottomRightToTopRight'];
+  }
+
+  getPatterns(gameCenterPositionX, gameHeight, alienHeight){
     return {
+      test: [{
+        p1: {x: 250, y: 350},
+        p2: {x: 250, y: 350},
+        p3: {x: 250, y: 350},
+        p4: {x: 250, y: 350}
+      }],
       leftToPosition: [{
-        p0: {x: 215, y: -44},
-        p1: {x: 225, y: 20},
-        p2: {x: 150, y: 320},
-        p3: {x: 150, y: 350}
+        p1: {x: gameCenterPositionX - 55, y: -alienHeight},
+        p2: {x: gameCenterPositionX - 45, y: 20},
+        p3: {x: gameCenterPositionX - 120, y: 320},
+        p4: {x: gameCenterPositionX - 120, y: 350}
       }, {
-        p0: {x: 150, y: 350},
-        p1: {x: 150, y: 550},
-        p2: {x: -250, y: 550},
-        p3: {x: -250, y: 350}
+        p1: {x: gameCenterPositionX - 120, y: 350},
+        p2: {x: gameCenterPositionX - 120, y: 550},
+        p3: {x: gameCenterPositionX - 520, y: 550},
+        p4: {x: gameCenterPositionX - 520, y: 350}
       }, {
-        p0: {x: -250, y: 350},
-        p1: {x: -250, y: 150},
-        p2: {x: 150, y: 150},
-        p3: {x: 150, y: 350}
+        p1: {x: gameCenterPositionX - 520, y: 350},
+        p2: {x: gameCenterPositionX - 520, y: 150},
+        p3: {x: gameCenterPositionX - 120, y: 150},
+        p4: {x: gameCenterPositionX - 120, y: 350}
       }, {
-        p0: {x: 150, y: 350},
-        p1: {x: 150, y: 445},
-        p2: {x: 220, y: 445},
-        p3: {x: 220, y: 350}
+        p1: {x: gameCenterPositionX - 120, y: 350},
+        p2: {x: gameCenterPositionX - 120, y: 445},
+        p3: {x: gameCenterPositionX - 50, y: 445},
+        p4: {x: gameCenterPositionX - 50, y: 350}
       }],
       rightToPosition: [{
-        p0: {x: 315, y: -44},
-        p1: {x: 315, y: 20},
-        p2: {x: 390, y: 320},
-        p3: {x: 390, y: 350}
+        p1: {x: gameCenterPositionX + 55, y: -alienHeight},
+        p2: {x: gameCenterPositionX + 45, y: 20},
+        p3: {x: gameCenterPositionX + 120, y: 320},
+        p4: {x: gameCenterPositionX + 120, y: 350}
       }, {
-        p0: {x: 390, y: 350},
-        p1: {x: 390, y: 550},
-        p2: {x: 790, y: 550},
-        p3: {x: 790, y: 350}
+        p1: {x: gameCenterPositionX + 120, y: 350},
+        p2: {x: gameCenterPositionX + 120, y: 550},
+        p3: {x: gameCenterPositionX + 520, y: 550},
+        p4: {x: gameCenterPositionX + 520, y: 350}
       }, {
-        p0: {x: 790, y: 350},
-        p1: {x: 790, y: 150},
-        p2: {x: 390, y: 150},
-        p3: {x: 390, y: 350}
+        p1: {x: gameCenterPositionX + 520, y: 350},
+        p2: {x: gameCenterPositionX + 520, y: 150},
+        p3: {x: gameCenterPositionX + 120, y: 150},
+        p4: {x: gameCenterPositionX + 120, y: 350}
       }, {
-        p0: {x: 390, y: 350},
-        p1: {x: 390, y: 445},
-        p2: {x: 320, y: 445},
-        p3: {x: 320, y: 350}
+        p1: {x: gameCenterPositionX + 120, y: 350},
+        p2: {x: gameCenterPositionX + 120, y: 445},
+        p3: {x: gameCenterPositionX + 50, y: 445},
+        p4: {x: gameCenterPositionX + 50, y: 350}
       }],
       leftToPositionTwo: [{
-        p0: {x: 215, y: -44},
-        p1: {x: 215, y: 100},
-        p2: {x: 50, y: 125},
-        p3: {x: 50, y: 225}
+        p1: {x: gameCenterPositionX - 55, y: -alienHeight},
+        p2: {x: gameCenterPositionX - 55, y: 100},
+        p3: {x: gameCenterPositionX - 220, y: 125},
+        p4: {x: gameCenterPositionX - 220, y: 225}
       }, {
-        p0: {x: 50, y: 225},
-        p1: {x: 50, y: 450},
-        p2: {x: 215, y: 450},
-        p3: {x: 215, y: 225}
+        p1: {x: gameCenterPositionX - 220, y: 225},
+        p2: {x: gameCenterPositionX - 220, y: 450},
+        p3: {x: gameCenterPositionX - 55, y: 450},
+        p4: {x: gameCenterPositionX - 55, y: 225}
       }],
       rightToPositionTwo: [{
-        p0: {x: 315, y: -44},
-        p1: {x: 315, y: 100},
-        p2: {x: 480, y: 125},
-        p3: {x: 480, y: 225}
+        p1: {x: gameCenterPositionX + 55, y: -alienHeight},
+        p2: {x: gameCenterPositionX + 55, y: 100},
+        p3: {x: gameCenterPositionX + 220, y: 125},
+        p4: {x: gameCenterPositionX + 220, y: 225}
       }, {
-        p0: {x: 480, y: 225},
-        p1: {x: 480, y: 450},
-        p2: {x: 315, y: 450},
-        p3: {x: 315, y: 225}
+        p1: {x: gameCenterPositionX + 220, y: 225},
+        p2: {x: gameCenterPositionX + 220, y: 450},
+        p3: {x: gameCenterPositionX + 55, y: 450},
+        p4: {x: gameCenterPositionX + 55, y: 225}
+      }],
+      topLeftToBottomRight: [{
+        p1: {x: gameCenterPositionX - 55, y: -alienHeight},
+        p2: {x: gameCenterPositionX - 45, y: 20},
+        p3: {x: gameCenterPositionX - 190, y: 310},
+        p4: {x: gameCenterPositionX - 190, y: 350}
+      },{
+        p1: {x: gameCenterPositionX - 190, y: 350},
+        p2: {x: gameCenterPositionX - 190, y: 445},
+        p3: {x: gameCenterPositionX + 10, y: 445},
+        p4: {x: gameCenterPositionX + 10, y: 350}
+      },{
+        p1: {x: gameCenterPositionX + 10, y: 350},
+        p2: {x: gameCenterPositionX + 10, y: 230},
+        p3: {x: gameCenterPositionX - 190, y: 230},
+        p4: {x: gameCenterPositionX - 190, y: 350}
+      },{
+        p1: {x: gameCenterPositionX - 190, y: 350},
+        p2: {x: gameCenterPositionX - 190, y: 455},
+        p3: {x: gameCenterPositionX + 170, y: 460},
+        p4: {x: gameCenterPositionX + 170, y: gameHeight + alienHeight}
+      }],
+      topRightToBottomLeft: [{
+        p1: {x: gameCenterPositionX + 55, y: -alienHeight},
+        p2: {x: gameCenterPositionX + 45, y: 20},
+        p3: {x: gameCenterPositionX + 190, y: 310},
+        p4: {x: gameCenterPositionX + 190, y: 350}
+      },{
+        p1: {x: gameCenterPositionX + 190, y: 350},
+        p2: {x: gameCenterPositionX + 190, y: 445},
+        p3: {x: gameCenterPositionX - 10, y: 445},
+        p4: {x: gameCenterPositionX - 10, y: 350}
+      },{
+        p1: {x: gameCenterPositionX - 10, y: 350},
+        p2: {x: gameCenterPositionX - 10, y: 230},
+        p3: {x: gameCenterPositionX + 190, y: 230},
+        p4: {x: gameCenterPositionX + 190, y: 350}
+      },{
+        p1: {x: gameCenterPositionX + 190, y: 350},
+        p2: {x: gameCenterPositionX + 190, y: 455},
+        p3: {x: gameCenterPositionX - 170, y: 460},
+        p4: {x: gameCenterPositionX - 170, y: gameHeight + alienHeight}
+      }],
+      bottomLeftToTopRight: [{
+        p1: {x: gameCenterPositionX - 55, y: gameHeight + alienHeight},
+        p2: {x: gameCenterPositionX - 45, y: 460},
+        p3: {x: gameCenterPositionX - 190, y: 455},
+        p4: {x: gameCenterPositionX - 190, y: 350}
+      },{
+        p1: {x: gameCenterPositionX - 190, y: 350},
+        p2: {x: gameCenterPositionX - 190, y: 100},
+        p3: {x: gameCenterPositionX + 10, y: 100},
+        p4: {x: gameCenterPositionX + 10, y: 350}
+      },{
+        p1: {x: gameCenterPositionX + 10, y: 350},
+        p2: {x: gameCenterPositionX + 10, y: 440},
+        p3: {x: gameCenterPositionX - 190, y: 440},
+        p4: {x: gameCenterPositionX - 190, y: 350}
+      },{
+        p1: {x: gameCenterPositionX - 190, y: 350},
+        p2: {x: gameCenterPositionX - 190, y: 310},
+        p3: {x: gameCenterPositionX + 170, y: 20},
+        p4: {x: gameCenterPositionX + 170, y: -alienHeight}
+      }],
+      bottomRightToTopLeft: [{
+        p1: {x: gameCenterPositionX + 55, y: gameHeight + alienHeight},
+        p2: {x: gameCenterPositionX + 45, y: 460},
+        p3: {x: gameCenterPositionX + 190, y: 455},
+        p4: {x: gameCenterPositionX + 190, y: 350}
+      },{
+        p1: {x: gameCenterPositionX + 190, y: 350},
+        p2: {x: gameCenterPositionX + 190, y: 100},
+        p3: {x: gameCenterPositionX - 10, y: 100},
+        p4: {x: gameCenterPositionX - 10, y: 350}
+      },{
+        p1: {x: gameCenterPositionX - 10, y: 350},
+        p2: {x: gameCenterPositionX - 10, y: 440},
+        p3: {x: gameCenterPositionX + 190, y: 440},
+        p4: {x: gameCenterPositionX + 190, y: 350}
+      },{
+        p1: {x: gameCenterPositionX + 190, y: 350},
+        p2: {x: gameCenterPositionX + 190, y: 310},
+        p3: {x: gameCenterPositionX - 170, y: 20},
+        p4: {x: gameCenterPositionX - 170, y: -alienHeight}
+      }],
+      topLeftToBottomLeft: [{
+        p1: {x: gameCenterPositionX - 190, y: -alienHeight},
+        p2: {x: gameCenterPositionX - 70, y: 45},
+        p3: {x: gameCenterPositionX + 40, y: 205},
+        p4: {x: gameCenterPositionX + 40, y: 200}
+      },{
+        p1: {x: gameCenterPositionX + 40, y: 200},
+        p2: {x: gameCenterPositionX + 35, y: 330},
+        p3: {x: gameCenterPositionX - 100, y: 500},
+        p4: {x: gameCenterPositionX - 190, y: gameHeight + alienHeight}
+      }],
+      topRightToBottomRight: [{
+        p1: {x: gameCenterPositionX + 190, y: -alienHeight},
+        p2: {x: gameCenterPositionX + 70, y: 45},
+        p3: {x: gameCenterPositionX - 40, y: 205},
+        p4: {x: gameCenterPositionX - 40, y: 200}
+      },{
+        p1: {x: gameCenterPositionX - 40, y: 200},
+        p2: {x: gameCenterPositionX - 35, y: 330},
+        p3: {x: gameCenterPositionX + 100, y: 500},
+        p4: {x: gameCenterPositionX + 190, y: gameHeight + alienHeight}
+      }],
+      bottomLeftToTopLeft: [{
+        p1: {x: gameCenterPositionX - 190, y: gameHeight + alienHeight},
+        p2: {x: gameCenterPositionX - 70, y: 500},
+        p3: {x: gameCenterPositionX + 40, y: 330},
+        p4: {x: gameCenterPositionX + 40, y: 200}
+      },{
+        p1: {x: gameCenterPositionX + 40, y: 200},
+        p2: {x: gameCenterPositionX + 40, y: 205},
+        p3: {x: gameCenterPositionX - 70, y: 45},
+        p4: {x: gameCenterPositionX - 190, y: -alienHeight}
+      }],
+      bottomRightToTopRight: [{
+        p1: {x: gameCenterPositionX + 190, y: gameHeight + alienHeight},
+        p2: {x: gameCenterPositionX + 70, y: 500},
+        p3: {x: gameCenterPositionX - 40, y: 330},
+        p4: {x: gameCenterPositionX - 40, y: 200}
+      },{
+        p1: {x: gameCenterPositionX - 40, y: 200},
+        p2: {x: gameCenterPositionX - 40, y: 205},
+        p3: {x: gameCenterPositionX + 70, y: 45},
+        p4: {x: gameCenterPositionX + 190, y: -alienHeight}
       }]
     };
   }
@@ -130,46 +263,46 @@ class Pattern {
   getAlienChildPatterns(positionX, positionY, playerRecentPositionX){
     return {
       childLeftToDown: [{
-        p0: {x: positionX, y: positionY},
-        p1: {x: positionX, y: positionY-40},
-        p2: {x: positionX+50, y: positionY-40},
-        p3: {x: positionX+50, y: positionY}
+        p1: {x: positionX, y: positionY},
+        p2: {x: positionX, y: positionY-40},
+        p3: {x: positionX+50, y: positionY-40},
+        p4: {x: positionX+50, y: positionY}
       }, {
-        p0: {x: positionX + 50, y: positionY},
-        p1: {x: positionX, y: positionY + 80},
-        p2: {x: playerRecentPositionX, y: positionY - 40},
-        p3: {x: playerRecentPositionX+50, y: positionY + 200}
+        p1: {x: positionX + 50, y: positionY},
+        p2: {x: positionX, y: positionY + 80},
+        p3: {x: playerRecentPositionX, y: positionY - 40},
+        p4: {x: playerRecentPositionX+50, y: positionY + 200}
       }, {
-        p0: {x: playerRecentPositionX+50, y: positionY + 200},
-        p1: {x: playerRecentPositionX+50, y: positionY + 300},
-        p2: {x: playerRecentPositionX-150, y: positionY + 300},
-        p3: {x: playerRecentPositionX-150, y: positionY + 200}
+        p1: {x: playerRecentPositionX+50, y: positionY + 200},
+        p2: {x: playerRecentPositionX+50, y: positionY + 300},
+        p3: {x: playerRecentPositionX-150, y: positionY + 300},
+        p4: {x: playerRecentPositionX-150, y: positionY + 200}
       }, {
-        p0: {x: playerRecentPositionX-150, y: positionY + 200},
-        p1: {x: playerRecentPositionX-150, y: positionY - 230},
-        p2: {x: playerRecentPositionX+130, y: positionY + 370},
-        p3: {x: playerRecentPositionX+180, y: -44}
+        p1: {x: playerRecentPositionX-150, y: positionY + 200},
+        p2: {x: playerRecentPositionX-150, y: positionY - 230},
+        p3: {x: playerRecentPositionX+130, y: positionY + 370},
+        p4: {x: playerRecentPositionX+180, y: -44}
       }],
       childRightToDown: [{
-        p0: {x: positionX, y: positionY},
-        p1: {x: positionX, y: positionY-40},
-        p2: {x: positionX-50, y: positionY-40},
-        p3: {x: positionX-50, y: positionY}
+        p1: {x: positionX, y: positionY},
+        p2: {x: positionX, y: positionY-40},
+        p3: {x: positionX-50, y: positionY-40},
+        p4: {x: positionX-50, y: positionY}
       }, {
-        p0: {x: positionX - 50, y: positionY},
-        p1: {x: positionX, y: positionY + 80},
-        p2: {x: playerRecentPositionX, y: positionY - 40},
-        p3: {x: playerRecentPositionX-50, y: positionY + 200}
+        p1: {x: positionX - 50, y: positionY},
+        p2: {x: positionX, y: positionY + 80},
+        p3: {x: playerRecentPositionX, y: positionY - 40},
+        p4: {x: playerRecentPositionX-50, y: positionY + 200}
       }, {
-        p0: {x: playerRecentPositionX-50, y: positionY + 200},
-        p1: {x: playerRecentPositionX-50, y: positionY + 300},
-        p2: {x: playerRecentPositionX+150, y: positionY + 300},
-        p3: {x: playerRecentPositionX+150, y: positionY + 200}
+        p1: {x: playerRecentPositionX-50, y: positionY + 200},
+        p2: {x: playerRecentPositionX-50, y: positionY + 300},
+        p3: {x: playerRecentPositionX+150, y: positionY + 300},
+        p4: {x: playerRecentPositionX+150, y: positionY + 200}
       }, {
-        p0: {x: playerRecentPositionX+150, y: positionY + 200},
-        p1: {x: playerRecentPositionX+150, y: positionY - 230},
-        p2: {x: playerRecentPositionX-130, y: positionY + 370},
-        p3: {x: playerRecentPositionX-180, y: -44}
+        p1: {x: playerRecentPositionX+150, y: positionY + 200},
+        p2: {x: playerRecentPositionX+150, y: positionY - 230},
+        p3: {x: playerRecentPositionX-130, y: positionY + 370},
+        p4: {x: playerRecentPositionX-180, y: -44}
       }]
     }
   }

@@ -6,7 +6,7 @@ class Alien {
     this.init();
   }
 
-  init(){
+  init() {
     this.width = 27;
     this.height = 44;
     this.isInPosition = false;
@@ -14,7 +14,6 @@ class Alien {
     this.isChildMoveDownPatternComplete = false;
     this.isMoveDownPatternComplete = false;
     this.isMovingDown = false;
-    this.alienNumber = 0;
     this.creationInterval = 0;
     this.moveDownInterval = 0;
     this.moveDownCounter = 0;
@@ -30,14 +29,11 @@ class Alien {
     this.isExploded = false;
     this.explosionCounter = 0;
     this.explosionInterval = 25;
-    this.isBulletFired = false;
     this.bulletDirectionY = -1;
-    this.bulletFiredTimeout = 100;
-    this.bulletFiredCounter = 0;
-    this.movingDownBulletTimeout = 80;
-    this.movingDownBulletFiredCounter = 0;
-    this.specialProperty = '';
+    this.bulletFiredInterval = 100;
     this.isPlayerPositionSet = false;
+    this.isRandom = false;
+    this.health = 1;
     this.pattern = new Pattern();
   }
 
@@ -48,7 +44,7 @@ class Alien {
     this.alienElement = document.createElement('div');
     this.alienElement.classList.add('alien');
 
-    if(this.isChild){
+    if (this.isChild) {
       this.parentAlienPositionX = parentPositionX;
       this.parentAlienPositionY = parentPositionY;
 
@@ -56,18 +52,18 @@ class Alien {
       this.patternStyle = this.properties.pattern;
       this.alienElement.style.width = this.properties.width + 'px';
       this.alienElement.style.height = this.properties.height + 'px';
-    }else{
+    } else {
       this.patternStyle = pattern;
       this.properties = this.getAlienProperties(this.size, this.type);
       this.alienElement.style.width = this.width + 'px';
       this.alienElement.style.height = this.height + 'px';
     }
-
     this.alienElement.style.top = this.positionY + 'px';
     this.alienElement.style.position = 'absolute';
     this.alienElement.style.background = 'url(images/star-wars-sprite.png)';
     this.alienElement.style.backgroundPosition = this.properties.positionX + 'px ' + this.properties.positionY + 'px';
     this.parentElement.appendChild(this.alienElement);
+    this.health = this.properties.health;
   }
 
   setAlienInPosition() {
@@ -114,10 +110,16 @@ class Alien {
       } else {
         if (!this.isInPosition) {
           this.setAlienInPosition();
+        }else{
+          var sidewaysMovementOffset = 20;
+          if (this.movementCounter % sidewaysMovementOffset === 0) {
+            this.moveX();
+          }
         }
       }
     }
   }
+
 
   moveX() {
     if (this.moveDirection === 1) {
@@ -131,7 +133,7 @@ class Alien {
     this.draw();
   }
 
-  setPosition(){
+  setPosition() {
     this.positionX = this.coOrdinates.x;
     this.positionY = this.coOrdinates.y;
   }
@@ -151,34 +153,36 @@ class Alien {
     }
   }
 
-  moveAlienChild(playerPositionX){
+  moveAlienChild(playerPositionX) {
     if (!this.isChildMoveDownPatternComplete) {
       this.setPlayerPosition(playerPositionX);
       this.coOrdinates = this.getChildPatternCoOrdinates();
-      if(this.coOrdinates) {
+      if (this.coOrdinates) {
         this.setPosition();
         this.draw();
       }
     }
   }
 
-  getChildPatternCoOrdinates(){
+  getChildPatternCoOrdinates() {
     if (this.t <= 1) {
       this.t += this.tOffset;
     } else {
-      if (this.patternCounter >= this.pattern.getAlienChildPatterns(this.parentAlienPositionX, this.parentAlienPositionY, this.playerPositionX)[this.properties.pattern].length - 1) {
+      if (this.patternCounter >= this.pattern.getAlienChildPatterns(this.parentAlienPositionX,
+        this.parentAlienPositionY, this.playerPositionX)[this.properties.pattern].length - 1) {
         this.isChildMoveDownPatternComplete = true;
       }
 
-      if (this.pattern.getAlienChildPatterns(this.parentAlienPositionX, this.parentAlienPositionY, this.playerPositionX)[this.properties.pattern].length > 1 &&
+      if (this.pattern.getAlienChildPatterns(this.parentAlienPositionX, this.parentAlienPositionY,
+        this.playerPositionX)[this.properties.pattern].length > 1 &&
         !this.isChildMoveDownPatternComplete) {
         this.patternCounter++;
         this.t = 0;
       }
     }
     if (!this.isChildMoveDownPatternComplete) {
-      return this.pattern.generateCoOrdinates(this.t, this.pattern.getAlienChildPatterns(this.parentAlienPositionX, this.parentAlienPositionY,
-        this.playerPositionX)[this.properties.pattern][this.patternCounter]);
+      return this.pattern.generateCoOrdinates(this.t, this.pattern.getAlienChildPatterns(this.parentAlienPositionX,
+        this.parentAlienPositionY, this.playerPositionX)[this.properties.pattern][this.patternCounter]);
     }
   }
 
@@ -203,9 +207,12 @@ class Alien {
 
   getPatternCoOrdinates() {
     var pattern = null;
-    if(!this.isChild) {
-      pattern = this.pattern.getPatterns()[this.patternStyle];
-    }else{
+    var gameWidth = this.parentElement.offsetWidth;
+    var gameCenterPositionX = gameWidth / 2;
+    var gameHeight = this.parentElement.offsetHeight;
+    if (!this.isChild) {
+      pattern = this.pattern.getPatterns(gameCenterPositionX, gameHeight, this.height)[this.patternStyle];
+    } else {
       pattern = this.pattern.getAlienChildPatterns(this.positionX, this.positionY)[this.patternStyle];
     }
 
@@ -254,11 +261,10 @@ class Alien {
 
   explode() {
     this.alienElement.style.transition = 'none';
-    if(!this.isChild) {
+    if (!this.isChild) {
       this.alienElement.style.background = 'url(images/alien-explosion.png)';
-    }else{
+    } else {
       this.alienElement.style.background = 'url(images/alien-child-explosion.png)';
-
     }
   }
 
@@ -289,14 +295,14 @@ class Alien {
           positionY: 0,
           score: 10,
           health: 1,
-          gunType: 1
+          weapon: 'normal'
         },
         two: {
           positionX: -104,
           positionY: 0,
           score: 10,
-          health: 1,
-          gunType: 1
+          health: 2,
+          weapon: 'normal'
         }
       }]
     }, {
@@ -306,7 +312,7 @@ class Alien {
           positionY: 0,
           score: 20,
           health: 2,
-          gunType: 2,
+          weapon: 'normal',
           special: 're-generate',
           children: [
             {
@@ -314,7 +320,7 @@ class Alien {
               positionY: -44,
               score: 25,
               health: 1,
-              gunType: 1,
+              weapon: 'shield-breaker',
               width: 18,
               height: 30,
               pattern: 'childLeftToDown'
@@ -324,7 +330,7 @@ class Alien {
               positionY: -44,
               score: 25,
               health: 1,
-              gunType: 1,
+              weapon: 'shield-breaker',
               width: 18,
               height: 30,
               pattern: 'childRightToDown'
@@ -335,16 +341,16 @@ class Alien {
           positionX: -158,
           positionY: 0,
           score: 20,
-          health: 2,
-          gunType: 2,
+          health: 1,
+          weapon: 'normal',
           special: 're-generate',
           children: [
             {
               positionX: -95,
               positionY: -44,
               score: 25,
-              health: 1,
-              gunType: 1,
+              health: 2,
+              weapon: 'normal',
               width: 18,
               height: 30,
               pattern: 'childLeftToDown'
@@ -353,13 +359,30 @@ class Alien {
               positionX: -95,
               positionY: -44,
               score: 25,
-              health: 1,
-              gunType: 1,
+              health: 2,
+              weapon: 'normal',
               width: 18,
               height: 30,
               pattern: 'childRightToDown'
             }
           ]
+        }
+      }]
+    },{
+      large: [{
+        one: {
+          positionX: -131,
+          positionY: 0,
+          score: 30,
+          health: 3,
+          weapon: 'spread'
+        },
+        two: {
+          positionX: -185,
+          positionY: 0,
+          score: 30,
+          health: 3,
+          weapon: 'shield-breaker'
         }
       }]
     }];

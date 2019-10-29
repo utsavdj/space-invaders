@@ -19,21 +19,35 @@ class Bullet {
     this.positionY = this.shooterPositionY;
   }
 
-  createBullet(type) {
+  createBullet(shooterType, bulletType = null, bulletIndex = null) {
+    var bulletTypeIndex = this.findIndexOfArrayObject(this.bullets(), 'weapon', bulletType);
+    if(bulletType) {
+      this.properties = this.bullets()[bulletTypeIndex];
+    }else{
+      this.properties = this.bullets()[0];
+    }
+    this.bulletIndex = bulletIndex;
+    if(bulletType === 'shield-breaker'){
+      this.positionY = (this.bulletIndex * this.properties.intervalY) + this.height + this.shooterPositionY;
+    }
+    this.createBulletElement(shooterType);
+  }
+
+  createBulletElement(shooterType){
     this.bulletElement = document.createElement('div');
-    this.bulletElement.style.width = this.width + 'px';
-    this.bulletElement.style.height = this.height + 'px';
     this.bulletElement.style.position = 'absolute';
-    if (type === 'player') {
+    if (shooterType === 'player') {
       this.bulletElement.classList.add('player-bullet');
-      this.bulletElement.style.background = 'url(images/blue-bullet.png)';
+      this.bulletElement.style.background = 'url(images/'+ this.properties.background +'.png)';
       this.bulletElement.style.top = this.positionY + 'px';
     } else {
       this.bulletElement.classList.add('alien-bullet');
-      this.bulletElement.style.background = 'url(images/red-bullet.png)';
-      this.positionY = this.positionY + this.shooterHeight;
+      this.bulletElement.style.background = 'url(images/'+ this.properties.alienBullet +'.png)';
+      // this.positionY = this.positionY;
       this.bulletElement.style.top = this.positionY  + 'px';
     }
+    this.bulletElement.style.width = this.properties.width + 'px';
+    this.bulletElement.style.height = this.properties.height + 'px';
     this.bulletElement.style.left = this.positionX + 'px';
     this.parentElement.appendChild(this.bulletElement);
   }
@@ -45,11 +59,20 @@ class Bullet {
       this.positionY += this.bulletSpeed;
     }
 
+    if(this.properties.weapon === 'spread'){
+      if(this.bulletIndex === 0){
+        this.positionX -= 1
+      }else if(this.bulletIndex === 2){
+        this.positionX += 1
+      }
+    }
+
     this.draw();
   }
 
   draw() {
     this.bulletElement.style.top = this.positionY + 'px';
+    this.bulletElement.style.left = this.positionX + 'px';
   }
 
   isBulletOutOfGame() {
@@ -65,6 +88,46 @@ class Bullet {
       this.positionX + this.width > alien.positionX &&
       this.positionY < alien.positionY + alien.height &&
       this.positionY + this.height > alien.positionY
+  }
+
+  findIndexOfArrayObject(array, key, value){
+    var i = 0;
+    var length = array.length;
+    for (i; i < length; i++){
+      if(array[i][key] === value){
+        return i;
+      }
+    }
+  }
+
+  bullets() {
+    return [
+      {
+        weapon: 'normal',
+        background: 'blue-bullet',
+        alienBullet: 'red-bullet',
+        width: 5,
+        height: 15
+      },
+      {
+        weapon: 'spread',
+        background: 's-bullet',
+        alienBullet: 's-red-bullet',
+        width: 9,
+        height: 13,
+        intervalX: 15,
+        intervalY: 15
+      },
+      {
+        weapon: 'shield-breaker',
+        shieldHealth: 3,
+        background: 'c-bullet',
+        alienBullet: 'c-red-bullet',
+        width: 9,
+        height: 9,
+        intervalY: 15
+      }
+    ]
   }
 }
 
