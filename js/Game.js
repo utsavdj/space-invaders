@@ -572,7 +572,7 @@ class Game {
   }
 
   createBoss() {
-    this.boss = new Boss(this.gameElement, this.levelSettings.boss, this.common.generateRandomValue);
+    this.boss = new Boss(this.gameElement, this.level, this.levelSettings.boss, this.common.generateRandomValue);
     this.boss.createBoss();
     this.isBossCreated = true;
     this.statusSideBar.createStatusContainer('boss', 'Boss');

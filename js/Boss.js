@@ -1,8 +1,9 @@
 class Boss {
-  constructor(parentElement, levelSettings, generateRandomValue) {
+  constructor(parentElement, level, levelSettings, generateRandomValue) {
     this.parentElement = parentElement;
     this.levelSettings = levelSettings;
     this.generateRandomValue = generateRandomValue;
+    this.level = level;
     this.init();
   }
 
@@ -15,11 +16,12 @@ class Boss {
     this.directionX = 1;
     this.positionX = 235;
     this.positionY = -this.height;
-    this.initialHealth = this.levelSettings.health;
+    this.properties = this.getProperties(this.level);
+    this.initialHealth = this.properties.health;
     this.health = this.initialHealth;
-    this.initialShield = this.levelSettings.shield;
+    this.initialShield = this.properties.shield;
     this.shield = this.initialShield;
-    this.weapon = this.levelSettings.weapon;
+    this.weapon = this.properties.weapon;
     this.isShieldOn = true;
     this.isExploded = false;
     this.explosionCounter = 0;
@@ -46,29 +48,31 @@ class Boss {
   createBoss() {
     this.bossElement = document.createElement('div');
     this.bossElement.classList.add('boss');
-    this.bossElement.style.width = this.width + 'px';
-    this.bossElement.style.height = this.height + 'px';
     this.bossElement.style.top = this.positionY + 'px';
     this.bossElement.style.left = this.positionX + 'px';
     this.bossElement.style.zIndex = '20';
     this.bossElement.style.position = 'absolute';
-    this.bossElement.style.background = 'url(images/death-star-shield.png)';
+    this.bossElement.style.background = 'url(images/star-wars-sprite.png)';
+    this.bossElement.style.backgroundPosition = this.properties.positionX + 'px '
+      + this.properties.positionY + 'px';
+    this.bossElement.style.width = this.properties.width + 'px';
+    this.bossElement.style.height = this.properties.height + 'px';
     this.parentElement.appendChild(this.bossElement);
   }
 
-  moveToPosition(){
+  moveToPosition() {
     var directionY = 1;
     var positionY = 20;
-    if(this.positionY >= positionY){
+    if (this.positionY >= positionY) {
       this.isInPosition = true;
     }
     this.movePositionY(directionY);
   }
 
   move() {
-    if(!this.isInPosition) {
+    if (!this.isInPosition) {
       this.moveToPosition();
-    }else {
+    } else {
       if (this.pauseIntervalCounter >= this.pauseInterval &&
         (this.gameWidth > this.positionX + this.width + this.moveOffesetPositionX &&
           this.moveOffesetPositionX < this.positionX)) {
@@ -78,15 +82,17 @@ class Boss {
             var directionY = 1;
             this.movePositionY(directionY);
           } else {
-            this.bossElement.style.background = 'url(images/death-star.png)';
-            this.bossElement.style.width = '60px';
-            this.bossElement.style.height = '60px';
+            this.bossElement.style.backgroundPosition = this.properties.withoutShield.positionX + 'px ' +
+              this.properties.withoutShield.positionY + 'px';
+            this.bossElement.style.width = this.properties.withoutShield.width + 'px';
+            this.bossElement.style.height = this.properties.withoutShield.height + 'px';
             this.isShieldOn = false;
             if (this.moveDownPauseCounter >= this.moveDownPause) {
               if (this.shield !== 0) {
-                this.bossElement.style.background = 'url(images/death-star-shield.png)';
-                this.bossElement.style.width = '62px';
-                this.bossElement.style.height = '62px';
+                this.bossElement.style.backgroundPosition = this.properties.positionX + 'px '
+                  + this.properties.positionY + 'px';
+                this.bossElement.style.width = this.properties.width + 'px';
+                this.bossElement.style.height = this.properties.height + 'px';
                 this.isShieldOn = true;
               }
               if (this.moveUpCounter <= this.moveDownUpto) {
@@ -167,8 +173,9 @@ class Boss {
   }
 
   explode() {
-    this.bossElement.style.background = 'url(images/boss-explosion.png)';
-    this.bossElement.style.backgroundSize = 'contain';
+    var backgroundPositionX = -388;
+    var backgroundPositionY = 0;
+    this.bossElement.style.backgroundPosition = backgroundPositionX + 'px ' + backgroundPositionY + 'px';
   }
 
   updateHealth(healthElement, healthElementHeight) {
@@ -187,6 +194,98 @@ class Boss {
     if (this.positionX < playerPositionX && this.positionX + this.width > playerPositionX) {
       return true;
     }
+  }
+
+  getProperties(level) {
+    for (var i = 0; i < this.boss().length; i++) {
+      if (this.boss()[i].level === level) {
+        return this.boss()[i];
+      }
+    }
+  }
+
+  boss() {
+    return [
+      {
+        level: 1,
+        health: 6,
+        shield: 6,
+        weapon: 'spread',
+        width: 62,
+        height: 62,
+        positionY: -88,
+        positionX: -349,
+        withoutShield: {
+          width: 60,
+          height: 60,
+          positionY: -88,
+          positionX: -49,
+        }
+      },
+      {
+        level: 2,
+        health: 6,
+        shield: 6,
+        weapon: 'spread',
+        width: 62,
+        height: 62,
+        positionY: -88,
+        positionX: -411,
+        withoutShield: {
+          width: 60,
+          height: 60,
+          positionY: -88,
+          positionX: -109,
+        }
+      },
+      {
+        level: 3,
+        health: 6,
+        shield: 6,
+        weapon: 'spread',
+        width: 62,
+        height: 62,
+        positionY: -88,
+        positionX: -474,
+        withoutShield: {
+          width: 60,
+          height: 60,
+          positionY: -88,
+          positionX: -169,
+        }
+      },
+      {
+        level: 4,
+        health: 6,
+        shield: 6,
+        weapon: 'spread',
+        width: 62,
+        height: 62,
+        positionY: -88,
+        positionX: -537,
+        withoutShield: {
+          width: 60,
+          height: 60,
+          positionY: -88,
+          positionX: -229,
+        }
+      }, {
+        level: 5,
+        health: 6,
+        shield: 6,
+        weapon: 'spread',
+        width: 62,
+        height: 62,
+        positionY: 0,
+        positionX: -327,
+        withoutShield: {
+          width: 60,
+          height: 60,
+          positionY: -88,
+          positionX: -289,
+        }
+      }
+    ]
   }
 }
 

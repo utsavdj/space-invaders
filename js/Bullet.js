@@ -6,11 +6,11 @@ class Bullet {
     this.init();
   }
 
-  init(){
+  init() {
     this.parentElementHeight = this.parentElement.clientHeight;
     this.bulletSpeed = 5;
     this.width = 5;
-    this.height = 15;
+    this.height = 20;
     this.shooterWidth = this.shooterElement.width;
     this.shooterHeight = this.shooterElement.height;
     this.shooterPositionX = this.shooterElement.positionX;
@@ -21,30 +21,34 @@ class Bullet {
 
   createBullet(shooterType, bulletType = null, bulletIndex = null) {
     var bulletTypeIndex = this.findIndexOfArrayObject(this.bullets(), 'weapon', bulletType);
-    if(bulletType) {
+    if (bulletType) {
       this.properties = this.bullets()[bulletTypeIndex];
-    }else{
+    } else {
       this.properties = this.bullets()[0];
     }
+    this.positionX = this.shooterPositionX + ((this.shooterWidth - this.properties.width) / 2);
     this.bulletIndex = bulletIndex;
-    if(bulletType === 'shield-breaker'){
-      this.positionY = (this.bulletIndex * this.properties.intervalY) + this.height + this.shooterPositionY;
+    if (bulletType === 'shield-breaker') {
+      this.positionY = (this.bulletIndex * this.properties.intervalY) + this.properties.height + this.shooterPositionY;
     }
     this.createBulletElement(shooterType);
   }
 
-  createBulletElement(shooterType){
+  createBulletElement(shooterType) {
     this.bulletElement = document.createElement('div');
     this.bulletElement.style.position = 'absolute';
+    this.bulletElement.style.background = 'url(images/star-wars-sprite.png)';
     if (shooterType === 'player') {
       this.bulletElement.classList.add('player-bullet');
-      this.bulletElement.style.background = 'url(images/'+ this.properties.background +'.png)';
+      this.bulletElement.style.backgroundPosition = this.properties.positionX + 'px ' +
+        this.properties.positionY + 'px';
       this.bulletElement.style.top = this.positionY + 'px';
     } else {
       this.bulletElement.classList.add('alien-bullet');
-      this.bulletElement.style.background = 'url(images/'+ this.properties.alienBullet +'.png)';
+      this.bulletElement.style.backgroundPosition = this.properties.alienBullet.positionX + 'px ' +
+        this.properties.alienBullet.positionY + 'px';
       // this.positionY = this.positionY;
-      this.bulletElement.style.top = this.positionY  + 'px';
+      this.bulletElement.style.top = this.positionY + 'px';
     }
     this.bulletElement.style.width = this.properties.width + 'px';
     this.bulletElement.style.height = this.properties.height + 'px';
@@ -59,10 +63,10 @@ class Bullet {
       this.positionY += this.bulletSpeed;
     }
 
-    if(this.properties.weapon === 'spread'){
-      if(this.bulletIndex === 0){
+    if (this.properties.weapon === 'spread') {
+      if (this.bulletIndex === 0) {
         this.positionX -= 1
-      }else if(this.bulletIndex === 2){
+      } else if (this.bulletIndex === 2) {
         this.positionX += 1
       }
     }
@@ -90,11 +94,11 @@ class Bullet {
       this.positionY + this.height > alien.positionY
   }
 
-  findIndexOfArrayObject(array, key, value){
+  findIndexOfArrayObject(array, key, value) {
     var i = 0;
     var length = array.length;
-    for (i; i < length; i++){
-      if(array[i][key] === value){
+    for (i; i < length; i++) {
+      if (array[i][key] === value) {
         return i;
       }
     }
@@ -104,28 +108,39 @@ class Bullet {
     return [
       {
         weapon: 'normal',
-        background: 'blue-bullet',
-        alienBullet: 'red-bullet',
+        positionX: -214,
+        positionY: 0,
+        alienBullet: {
+          positionX: -214,
+          positionY: -20,
+        },
         width: 5,
         height: 15
       },
       {
         weapon: 'spread',
-        background: 's-bullet',
-        alienBullet: 's-red-bullet',
-        width: 9,
-        height: 13,
+        positionX: -220,
+        positionY: 0,
+        alienBullet: {
+          positionX: -220,
+          positionY: -17,
+        },
+        width: 11,
+        height: 17,
         intervalX: 15,
         intervalY: 15
       },
       {
         weapon: 'shield-breaker',
-        shieldHealth: 3,
-        background: 'c-bullet',
-        alienBullet: 'c-red-bullet',
-        width: 9,
-        height: 9,
-        intervalY: 15
+        positionX: -232,
+        positionY: 0,
+        alienBullet: {
+          positionX: -232,
+          positionY: -13,
+        },
+        width: 13,
+        height: 13,
+        intervalY: 20
       }
     ]
   }

@@ -5,9 +5,10 @@ class Player {
     this.init();
   }
 
-  init(){
-    this.width = 49;
-    this.height = 73;
+  init() {
+    this.properties = this.player().single;
+    this.width = this.properties.width;
+    this.height = this.properties.height;
     this.positionX = 276;
     this.positionY = 572;
     this.isExploded = false;
@@ -31,6 +32,7 @@ class Player {
     this.playerElement.style.width = this.width + 'px';
     this.playerElement.style.height = this.height + 'px';
     this.playerElement.style.background = 'url(images/star-wars-sprite.png)';
+    this.playerElement.style.backgroundPosition = this.properties.positionX + 'px ' + this.properties.positionY + 'px';
     this.playerElement.style.position = 'absolute';
     this.playerElement.style.top = this.positionY + 'px';
     this.playerElement.style.left = this.positionX + 'px';
@@ -56,7 +58,9 @@ class Player {
   }
 
   explode() {
-    this.playerElement.style.background = 'url(images/player-explode.png)';
+    var positionX = 0;
+    var positionY = -73;
+    this.playerElement.style.backgroundPosition = positionX + 'px ' + positionY + 'px';
   }
 
   updateHealth(healthElement, healthElementHeight) {
@@ -71,19 +75,30 @@ class Player {
     shieldElement.style.top = currentShieldTopOffset + 'px';
   }
 
-  fillShield(gameContainer){
+  fillShield(gameContainer) {
     var shieldElement = gameContainer.getElementsByClassName('player-shield')[0];
     shieldElement.style.top = '0px';
   }
 
-  fillHealth(gameContainer){
+  fillHealth(gameContainer) {
     var healthContainerElement = gameContainer.getElementsByClassName('player-health-container')[0];
     var healthContainerElementHeight = healthContainerElement.clientHeight;
     var oneHealthPositionY = healthContainerElementHeight / this.initialHealth;
     var healthElement = gameContainer.getElementsByClassName('player-health')[0];
     var healthElementPositionY = healthElement.offsetTop;
-    var currentHealthPositionY =  healthElementPositionY - oneHealthPositionY;
+    var currentHealthPositionY = healthElementPositionY - oneHealthPositionY;
     healthElement.style.top = currentHealthPositionY + 'px';
+  }
+
+  player() {
+    return {
+      single: {
+        positionX: 0,
+        positionY: 0,
+        width: 49,
+        height: 73
+      }
+    }
   }
 
 }

@@ -260,12 +260,14 @@ class Alien {
   }
 
   explode() {
-    this.alienElement.style.transition = 'none';
-    if (!this.isChild) {
-      this.alienElement.style.background = 'url(images/alien-explosion.png)';
-    } else {
-      this.alienElement.style.background = 'url(images/alien-child-explosion.png)';
+    var positionX = -50;
+    var positionY = -44;
+    if (this.isChild) {
+      positionX = -113;
+      positionY = -44;
     }
+    this.alienElement.style.transition = 'none';
+    this.alienElement.style.backgroundPosition = positionX + 'px ' + positionY + 'px';
   }
 
   checkIsPlayerClose(playerPositionX) {

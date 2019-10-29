@@ -4,10 +4,10 @@ class Drop {
     this.init();
   }
 
-  init(){
+  init() {
     this.dropSpeed = 4;
     this.width = 31;
-    this.height = 16;
+    this.height = 17;
   }
 
   createDrop(positionX, generateRandomValue) {
@@ -21,9 +21,9 @@ class Drop {
     this.element.style.height = this.height + 'px';
     this.element.style.position = 'absolute';
     this.element.classList.add('drop');
-    this.element.style.background = 'url(images/'+ this.properties.background +'.png)';
-    this.element.style.backgroundSize = 'contain';
-    this.element.style.top = this.positionY  + 'px';
+    this.element.style.background = 'url(images/star-wars-sprite.png)';
+    this.element.style.backgroundPosition = this.properties.positionX + 'px ' + this.properties.positionY + 'px';
+    this.element.style.top = this.positionY + 'px';
     this.element.style.left = this.positionX + 'px';
     this.parentElement.appendChild(this.element);
   }
@@ -57,20 +57,24 @@ class Drop {
     return [
       {
         weapon: 'normal',
-        background: 'drop-1'
+        positionX: -244,
+        positionY: 0
       },
       {
         weapon: 'spread',
-        background: 'drop-2'
+        positionX: -245,
+        positionY: -17
       },
       {
         weapon: 'shield',
         shield: 3,
-        background: 'drop-4'
+        positionX: -276,
+        positionY: 0
       },
       {
         weapon: 'shield-breaker',
-        background: 'drop-5'
+        positionX: -276,
+        positionY: -17
       }
     ]
   }

@@ -10,14 +10,11 @@ class GameLevel {
         noOfCoinsGenerated: 5,
         noOfAliensToShootToGenerateCoins: 2,
         boss: {
-          health: 6,
-          shield: 6,
           pauseInterval: 200,
           pause: 100,
           moveDownPause: 200,
           moveDownFireRate: 6,
           moveDownUpto: 200,
-          weapon: 'spread',
           score: 1000
         },
         totalAliens: 1,
@@ -45,15 +42,15 @@ class GameLevel {
               alienTypes: [{
                 size: 'small',
                 type: 'one',
-                number: 5
+                number: 1
               }],
               pattern: 'leftToPosition'
             },
             {
               alienTypes: [{
-                size: 'medium',
+                size: 'small',
                 type: 'two',
-                number: 2
+                number: 0
               }],
               pattern: 'rightToPosition'
             }
