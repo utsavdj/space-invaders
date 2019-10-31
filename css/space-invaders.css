@@ -11,7 +11,7 @@
 .menu-main-text{
   color: yellow;
   font-family: 'star-wars', Arial, Helvetica, sans-serif;
-  font-size: 60px;
+  font-size: 75px;
   text-align: center;
 }
 
@@ -19,6 +19,7 @@
   text-align: center;
   color: #ffffff;
   padding: 20px 0;
+  list-style: none;
 }
 
 .instructions li{
@@ -135,13 +136,21 @@
   left: 41px;
 }
 
-.new-game-btn, .menu-btn, .pause-btn, .continue-btn, .start-btn{
+.new-game-btn, .menu-btn, .pause-btn, .continue-btn, .start-btn, .menu-level-btn, .menu-boss-round-btn{
   border: 1px solid #ffffff;
   background-color: red;
   color: white;
   padding: 5px 15px;
   font-size: 18px;
   cursor: pointer;
+}
+
+.menu-level-btn, .menu-boss-round-btn{
+  font-size: 16px;
+}
+
+.menu-level-btn{
+  margin-right: 15px;
 }
 
 .start-btn{
@@ -151,6 +160,11 @@
 .new-game-btn, .menu-btn, .pause-btn {
   margin: 15px;
   width: 140px;
+}
+
+.new-game-btn:hover, .menu-btn:hover, .pause-btn:hover, .continue-btn:hover, .start-btn:hover,
+.menu-level-btn:hover, .menu-boss-round-btn:hover{
+  background-color: darkred;
 }
 
 .loading-screen-container{
@@ -164,6 +178,31 @@
   margin-bottom: 30px;
   font-weight: bold;
   font-size: 18px;
+}
+
+.menu-level-container{
+  width: 600px;
+  margin: 60px auto;
+}
+
+.menu-level-text{
+  color: #ffffff;
+  text-align: left;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.menu-levels li{
+  margin: 30px 0;
+}
+
+.menu-level-name{
+  color: #ffffff;
+  text-align: left;
+  float: left;
+  width: 49%;
+  font-size: 18px;
+  line-height: 33px;
 }
 
 .loader {

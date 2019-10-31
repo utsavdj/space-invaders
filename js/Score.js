@@ -10,14 +10,14 @@ class Score {
     buttonsContainer.appendChild(scoreTextElement);
     var scoreTextElement = createElement('div', 'score-text', 'Score');
     buttonsContainer.appendChild(scoreTextElement);
-    var scoreElement = createElement('div', 'score', score.toString());
+    var scoreElement = createElement('div', 'score', score+'');
     buttonsContainer.appendChild(scoreElement);
     var hiScoreTextElement = createElement('div', 'hi-score-text', 'Hi Score');
     buttonsContainer.appendChild(hiScoreTextElement);
-    var hiScoreElement = createElement('div', 'hi-score', hiScore.toString());
+    var hiScoreElement = createElement('div', 'hi-score', hiScore+'');
     buttonsContainer.appendChild(hiScoreElement);
 
-    return scoreElement;
+    return {scoreElement: scoreElement, hiScoreElement: hiScoreElement};
   }
 
 }

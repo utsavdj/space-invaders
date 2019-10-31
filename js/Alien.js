@@ -1,4 +1,6 @@
 import Pattern from '../js/Pattern.js';
+import * as weaponConstants from "../js/constants/weaponConstants.js";
+import {CHILD_LEFT_TO_DOWN, CHILD_RIGHT_TO_DOWN} from "../js/constants/patternConstants.js";
 
 class Alien {
   constructor(parentElement) {
@@ -180,6 +182,7 @@ class Alien {
         this.t = 0;
       }
     }
+
     if (!this.isChildMoveDownPatternComplete) {
       return this.pattern.generateCoOrdinates(this.t, this.pattern.getAlienChildPatterns(this.parentAlienPositionX,
         this.parentAlienPositionY, this.playerPositionX)[this.properties.pattern][this.patternCounter]);
@@ -297,14 +300,14 @@ class Alien {
           positionY: 0,
           score: 10,
           health: 1,
-          weapon: 'normal'
+          weapon: weaponConstants.NORMAL
         },
         two: {
           positionX: -104,
           positionY: 0,
           score: 10,
           health: 2,
-          weapon: 'normal'
+          weapon: weaponConstants.NORMAL
         }
       }]
     }, {
@@ -314,28 +317,28 @@ class Alien {
           positionY: 0,
           score: 20,
           health: 2,
-          weapon: 'normal',
-          special: 're-generate',
+          weapon: weaponConstants.NORMAL,
+          special: weaponConstants.REGENERATE,
           children: [
             {
               positionX: -77,
               positionY: -44,
               score: 25,
               health: 1,
-              weapon: 'shield-breaker',
+              weapon: weaponConstants.SHIELD_BREAKER,
               width: 18,
               height: 30,
-              pattern: 'childLeftToDown'
+              pattern: CHILD_LEFT_TO_DOWN
             },
             {
               positionX: -77,
               positionY: -44,
               score: 25,
               health: 1,
-              weapon: 'shield-breaker',
+              weapon: weaponConstants.SHIELD_BREAKER,
               width: 18,
               height: 30,
-              pattern: 'childRightToDown'
+              pattern: CHILD_RIGHT_TO_DOWN
             }
           ]
         },
@@ -344,28 +347,28 @@ class Alien {
           positionY: 0,
           score: 20,
           health: 1,
-          weapon: 'normal',
-          special: 're-generate',
+          weapon: weaponConstants.NORMAL,
+          special: weaponConstants.REGENERATE,
           children: [
             {
               positionX: -95,
               positionY: -44,
               score: 25,
               health: 2,
-              weapon: 'normal',
+              weapon: weaponConstants.NORMAL,
               width: 18,
               height: 30,
-              pattern: 'childLeftToDown'
+              pattern: CHILD_LEFT_TO_DOWN
             },
             {
               positionX: -95,
               positionY: -44,
               score: 25,
               health: 2,
-              weapon: 'normal',
+              weapon: weaponConstants.NORMAL,
               width: 18,
               height: 30,
-              pattern: 'childRightToDown'
+              pattern: CHILD_RIGHT_TO_DOWN
             }
           ]
         }
@@ -377,14 +380,14 @@ class Alien {
           positionY: 0,
           score: 30,
           health: 3,
-          weapon: 'spread'
+          weapon: weaponConstants.SPREAD
         },
         two: {
           positionX: -185,
           positionY: 0,
           score: 30,
           health: 3,
-          weapon: 'shield-breaker'
+          weapon: weaponConstants.SHIELD_BREAKER
         }
       }]
     }];

@@ -1,3 +1,5 @@
+import * as weaponConstants from "../js/constants/weaponConstants.js";
+
 class Drop {
   constructor(parentElement) {
     this.parentElement = parentElement;
@@ -56,23 +58,23 @@ class Drop {
   drops() {
     return [
       {
-        weapon: 'normal',
+        weapon: weaponConstants.NORMAL,
         positionX: -244,
         positionY: 0
       },
       {
-        weapon: 'spread',
+        weapon: weaponConstants.SPREAD,
         positionX: -245,
         positionY: -17
       },
       {
-        weapon: 'shield',
+        weapon: weaponConstants.SHIELD,
         shield: 3,
         positionX: -276,
         positionY: 0
       },
       {
-        weapon: 'shield-breaker',
+        weapon: weaponConstants.SHIELD_BREAKER,
         positionX: -276,
         positionY: -17
       }

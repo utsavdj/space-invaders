@@ -1,3 +1,5 @@
+import * as weaponConstants from "../js/constants/weaponConstants.js";
+
 class Bullet {
   constructor(parentElement, shooterElement, bulletDirection) {
     this.parentElement = parentElement;
@@ -16,7 +18,7 @@ class Bullet {
     this.shooterPositionX = this.shooterElement.positionX;
     this.positionX = this.shooterPositionX + ((this.shooterWidth - this.width) / 2);
     this.shooterPositionY = this.shooterElement.positionY;
-    this.positionY = this.shooterPositionY;
+    this.positionY = this.shooterPositionY + this.shooterHeight - this.height;
   }
 
   createBullet(shooterType, bulletType = null, bulletIndex = null) {
@@ -28,7 +30,7 @@ class Bullet {
     }
     this.positionX = this.shooterPositionX + ((this.shooterWidth - this.properties.width) / 2);
     this.bulletIndex = bulletIndex;
-    if (bulletType === 'shield-breaker') {
+    if (bulletType === weaponConstants.SHIELD_BREAKER) {
       this.positionY = (this.bulletIndex * this.properties.intervalY) + this.properties.height + this.shooterPositionY;
     }
     this.createBulletElement(shooterType);
@@ -63,7 +65,7 @@ class Bullet {
       this.positionY += this.bulletSpeed;
     }
 
-    if (this.properties.weapon === 'spread') {
+    if (this.properties.weapon === weaponConstants.SPREAD) {
       if (this.bulletIndex === 0) {
         this.positionX -= 1
       } else if (this.bulletIndex === 2) {
@@ -107,7 +109,7 @@ class Bullet {
   bullets() {
     return [
       {
-        weapon: 'normal',
+        weapon: weaponConstants.NORMAL,
         positionX: -214,
         positionY: 0,
         alienBullet: {
@@ -118,7 +120,7 @@ class Bullet {
         height: 15
       },
       {
-        weapon: 'spread',
+        weapon: weaponConstants.SPREAD,
         positionX: -220,
         positionY: 0,
         alienBullet: {
@@ -131,16 +133,16 @@ class Bullet {
         intervalY: 15
       },
       {
-        weapon: 'shield-breaker',
+        weapon: weaponConstants.SHIELD_BREAKER,
         positionX: -232,
         positionY: 0,
         alienBullet: {
           positionX: -232,
-          positionY: -13,
+          positionY: -7,
         },
-        width: 13,
-        height: 13,
-        intervalY: 20
+        width: 7,
+        height: 7,
+        intervalY: 13
       }
     ]
   }

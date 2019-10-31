@@ -1,3 +1,5 @@
+import {NORMAL} from "../js/constants/weaponConstants.js";
+
 class Player {
   constructor(parentElement, totalHealth) {
     this.parentElement = parentElement;
@@ -6,17 +8,16 @@ class Player {
   }
 
   init() {
-    this.properties = this.player().single;
-    this.width = this.properties.width;
-    this.height = this.properties.height;
+    this.width = 49;
+    this.height = 73;
     this.positionX = 276;
     this.positionY = 572;
     this.isExploded = false;
     this.isBulletFired = false;
-    this.bulletFiredInterval = 10;
+    this.bulletFiredInterval = 20;
     this.bulletFiredCounter = 0;
     this.bulletDirectionY = 1;
-    this.weapon = 'normal';
+    this.weapon = NORMAL;
     this.maxShield = 3;
     this.shield = 0;
     this.health = this.initialHealth;
@@ -27,12 +28,14 @@ class Player {
   }
 
   createPlayer() {
+    const BACKGROUND_POSITION_X = 0;
+    const BACKGROUND_POSITION_Y = 0;
     this.playerElement = document.createElement('div');
     this.playerElement.classList.add('player');
     this.playerElement.style.width = this.width + 'px';
     this.playerElement.style.height = this.height + 'px';
     this.playerElement.style.background = 'url(images/star-wars-sprite.png)';
-    this.playerElement.style.backgroundPosition = this.properties.positionX + 'px ' + this.properties.positionY + 'px';
+    this.playerElement.style.backgroundPosition = BACKGROUND_POSITION_X + 'px ' + BACKGROUND_POSITION_Y + 'px';
     this.playerElement.style.position = 'absolute';
     this.playerElement.style.top = this.positionY + 'px';
     this.playerElement.style.left = this.positionX + 'px';
@@ -88,17 +91,6 @@ class Player {
     var healthElementPositionY = healthElement.offsetTop;
     var currentHealthPositionY = healthElementPositionY - oneHealthPositionY;
     healthElement.style.top = currentHealthPositionY + 'px';
-  }
-
-  player() {
-    return {
-      single: {
-        positionX: 0,
-        positionY: 0,
-        width: 49,
-        height: 73
-      }
-    }
   }
 
 }

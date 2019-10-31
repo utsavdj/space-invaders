@@ -1,3 +1,5 @@
+import {ROWS, COLS} from "../js/constants/gameConstants.js";
+
 class Pattern {
   constructor() {
   }
@@ -12,24 +14,22 @@ class Pattern {
   }
 
   moveDownPatterns(playerRecentPositionX, positionX, positionY) {
-    this.currentPositionX = positionX;
-    this.currentPositionY = positionY;
     return [{
-      p1: {x: this.currentPositionX, y: this.currentPositionY},
-      p2: {x: this.currentPositionX, y: this.currentPositionY - 40},
-      p3: {x: this.currentPositionX + 50, y: this.currentPositionY - 40},
-      p4: {x: this.currentPositionX + 50, y: this.currentPositionY}
+      p1: {x: positionX, y: positionY},
+      p2: {x: positionX, y: positionY - 40},
+      p3: {x: positionX + 50, y: positionY - 40},
+      p4: {x: positionX + 50, y: positionY}
     }, {
-      p1: {x: this.currentPositionX + 50, y: this.currentPositionY},
-      p2: {x: this.currentPositionX, y: this.currentPositionY + 80},
-      p3: {x: playerRecentPositionX, y: this.currentPositionY - 40},
-      p4: {x: playerRecentPositionX, y: this.currentPositionY + 200}
+      p1: {x: positionX + 50, y: positionY},
+      p2: {x: positionX, y: positionY + 80},
+      p3: {x: playerRecentPositionX, y: positionY - 40},
+      p4: {x: playerRecentPositionX, y: positionY + 200}
     }]
   }
 
   getAlienPositionAndInterval(){
-    var numCols = 10;
-    var numRows = 5;
+    var numCols = COLS;
+    var numRows = ROWS;
     var xCounter = numCols/2;
     var array = [];
     var col = 0;
@@ -50,11 +50,6 @@ class Pattern {
     }
 
     return array;
-  }
-
-  getRandomAlienPatterns(){
-    return ['topLeftToBottomRight', 'topRightToBottomLeft', 'bottomLeftToTopRight', 'bottomRightToTopLeft',
-    'topLeftToBottomLeft', 'topRightToBottomRight', 'bottomLeftToTopLeft', 'bottomRightToTopRight'];
   }
 
   getPatterns(gameCenterPositionX, gameHeight, alienHeight){

@@ -1,3 +1,5 @@
+import * as weaponConstants from "../js/constants/weaponConstants.js";
+
 class Boss {
   constructor(parentElement, level, levelSettings, generateRandomValue) {
     this.parentElement = parentElement;
@@ -9,8 +11,8 @@ class Boss {
 
   init() {
     this.gameWidth = this.parentElement.offsetWidth;
-    this.width = 62;
-    this.height = 62;
+    this.width = 122;
+    this.height = 122;
     this.movementCounter = 0;
     this.moveOffset = 1;
     this.directionX = 1;
@@ -173,8 +175,8 @@ class Boss {
   }
 
   explode() {
-    var backgroundPositionX = -388;
-    var backgroundPositionY = 0;
+    var backgroundPositionX = -49;
+    var backgroundPositionY = -330;
     this.bossElement.style.backgroundPosition = backgroundPositionX + 'px ' + backgroundPositionY + 'px';
   }
 
@@ -210,14 +212,14 @@ class Boss {
         level: 1,
         health: 6,
         shield: 6,
-        weapon: 'spread',
-        width: 62,
-        height: 62,
-        positionY: -88,
-        positionX: -349,
+        weapon: weaponConstants.NORMAL,
+        width: 122,
+        height: 122,
+        positionY: -87,
+        positionX: -169,
         withoutShield: {
-          width: 60,
-          height: 60,
+          width: 120,
+          height: 120,
           positionY: -88,
           positionX: -49,
         }
@@ -226,63 +228,63 @@ class Boss {
         level: 2,
         health: 6,
         shield: 6,
-        weapon: 'spread',
-        width: 62,
-        height: 62,
-        positionY: -88,
-        positionX: -411,
+        weapon: weaponConstants.SHIELD_BREAKER,
+        width: 122,
+        height: 122,
+        positionY: -210,
+        positionX: -169,
         withoutShield: {
-          width: 60,
-          height: 60,
-          positionY: -88,
-          positionX: -109,
+          width: 120,
+          height: 120,
+          positionY: -210,
+          positionX: -49,
         }
       },
       {
         level: 3,
         health: 6,
         shield: 6,
-        weapon: 'spread',
-        width: 62,
-        height: 62,
-        positionY: -88,
-        positionX: -474,
+        weapon: weaponConstants.SHIELD_BREAKER,
+        width: 122,
+        height: 122,
+        positionY: 3,
+        positionX: -428,
         withoutShield: {
-          width: 60,
-          height: 60,
-          positionY: -88,
-          positionX: -169,
+          width: 120,
+          height: 120,
+          positionY: 0,
+          positionX: -308,
         }
       },
       {
         level: 4,
         health: 6,
         shield: 6,
-        weapon: 'spread',
-        width: 62,
-        height: 62,
-        positionY: -88,
-        positionX: -537,
+        weapon: weaponConstants.SPREAD,
+        width: 122,
+        height: 122,
+        positionY: -241,
+        positionX: -428,
         withoutShield: {
-          width: 60,
-          height: 60,
-          positionY: -88,
-          positionX: -229,
+          width: 120,
+          height: 120,
+          positionY: -241,
+          positionX: -308,
         }
       }, {
         level: 5,
         health: 6,
         shield: 6,
-        weapon: 'spread',
-        width: 62,
-        height: 62,
-        positionY: 0,
-        positionX: -327,
+        weapon: weaponConstants.SPREAD,
+        width: 122,
+        height: 119,
+        positionY: -121,
+        positionX: -428,
         withoutShield: {
-          width: 60,
-          height: 60,
-          positionY: -88,
-          positionX: -289,
+          width: 120,
+          height: 120,
+          positionY: -120,
+          positionX: -308,
         }
       }
     ]

@@ -9,23 +9,28 @@ import Coin from "../js/Coin.js";
 import Health from "../js/Health.js";
 import Drop from "../js/Drop.js";
 import Menu from "../js/Menu.js";
-import LoadingScreen from "../js/LoadingScreen.js";
 import StatusSidebar from "../js/StatusSidebar.js";
 import Score from "../js/Score.js";
 import Common from "../js/Common.js";
 import GameOver from "../js/GameOver.js";
 import LevelComplete from "../js/LevelComplete.js";
+import * as weaponConstants from "../js/constants/weaponConstants.js";
+import * as shooterTypeConstants from "../js/constants/shooterTypeConstants.js";
+import * as itemTypeConstants from "../js/constants/itemTypeConstants.js";
+import * as gameConstants from "../js/constants/gameConstants.js";
 
 class Game {
   constructor(gameId) {
     this.gameId = gameId;
     this.level = 1;
+    this.isBossRound = false;
     this.score = 0;
-    this.hiScore = 0;
+    this.hiScoreId = gameId+'-level-'+this.level;
+    this.hiScore = localStorage.getItem(this.hiScoreId);
+    this.hiScore = this.hiScore ? this.hiScore : 0;
     this.common = new Common();
     this.createParentElement();
-    this.createLoadingScreen();
-    this.loadMenu();
+    this.menu();
   }
 
   createParentElement() {
@@ -34,82 +39,41 @@ class Game {
     document.body.prepend(this.parentElement);
   }
 
-  // loadJSON() {
-  //   var xobj = new XMLHttpRequest();
-  //   xobj.overrideMimeType("application/json");
-  //   xobj.open('GET', 'js/gameLevel.json', true);
-  //   xobj.onreadystatechange = function () {
-  //     if (xobj.readyState === 4 && xobj.status === 200) {
-  //       return xobj.responseText;
-  //     }
-  //   };
-  //   xobj.send(null);
-  // }
-
-  // preload(){
-  //   return [
-  //     'images/drop-5.png',
-  //     'images/life.png',
-  //     'images/c-red-bullet.png',
-  //     'images/drop-4.png',
-  //     'images/drop-2.png',
-  //   ]
-  // }
-  createLoadingScreen() {
-    var loadingScreen = new LoadingScreen(this.common.createElement);
-    loadingScreen.createLoadingScreen(this.parentElement);
-  }
-
-  loadMenu() {
-    // window.onload = () => {
-    var loadingScreenElement = this.parentElement.getElementsByClassName('loading-screen')[0];
-    loadingScreenElement.remove();
-    this.menu();
-    // };
-  }
-
-  loadGame() {
-    window.onload = () => {
-      // this.loadingScreenElement.remove();
-      this.init();
-      this.checkKeyPress();
-      this.requestAnimation = window.requestAnimationFrame(this.render.bind(this));
-    };
-  }
-
   menu() {
     var menu = new Menu(this.common.createElement);
     menu.createMenu(this.parentElement);
-    this.start();
+    this.onMenuLevelClick();
+    this.onMenuBossRoundClick();
+    this.onStartGameClick();
   }
 
-  start() {
-    var startButton = this.parentElement.getElementsByClassName('start-btn')[0];
-    var menuContainer = this.parentElement.getElementsByClassName('menu-container')[0];
+  onStartGameClick() {
+    let startButton = this.parentElement.getElementsByClassName('start-btn')[0];
     startButton.onclick = () => {
-      menuContainer.remove();
-      this.init();
-      this.checkKeyPress();
-      this.requestAnimation = window.requestAnimationFrame(this.render.bind(this));
+      this.level = 1;
+      this.isBossRound = false;
+      this.startGame();
     }
   }
 
+  startGame(){
+    let menuContainer = this.parentElement.getElementsByClassName('menu-container')[0];
+    menuContainer.remove();
+    this.init();
+    this.checkKeyPress();
+    this.requestAnimation = window.requestAnimationFrame(this.render.bind(this));
+  }
+
   init() {
-    // var images = [];
-    // // console.log(this.preload);
-    // for (var i = 0; i < this.preload().length; i++) {
-    //   images[i] = new Image();
-    //   images[i].src = this.preload()[i];
-    // }
-    // images = [];
     this.createGame();
-    var gameLevel = new GameLevel();
-    this.levelSettings = gameLevel.getLevel(this.level);
+    this.gameLevel = new GameLevel(this.level);
+    this.levelSettings = this.gameLevel.getLevel();
     this.background = new Background(this.gameElement);
     this.playerTotalHealth = 5;
     this.player = new Player(this.gameElement, this.playerTotalHealth);
     this.pattern = new Pattern();
     this.gameOver = new GameOver();
+    console.log(this.gameLevel);
     this.positions = this.pattern.getAlienPositionAndInterval();
     this.playerRecentPositionX = this.player.positionX;
     this.aliens = [];
@@ -124,7 +88,6 @@ class Game {
     this.alienCreationIntervalOffset = 15;
     this.alienMoveDownOffset = 300;
     this.levelProgressCounter = 0;
-    this.positionsY = [309, 255, 201, 147, 93];
     this.isGameOver = false;
     this.isAlienBulletFired = false;
     this.alienBulletFireInterval = 100;
@@ -147,7 +110,6 @@ class Game {
     this.randomAlienGenerationInterval = this.levelSettings.randomAliens.interval;
     this.randomAlienGenerationCounter = 0;
     this.isPaused = false;
-    this.isBossRound = false;
   }
 
   checkKeyPress() {
@@ -169,6 +131,31 @@ class Game {
     }
   }
 
+  createGame() {
+    this.gameContainerHeight = '655';
+    this.gameContainer = this.common.createElement('div', 'star-invaders-container');
+    this.gameContainer.style.height = this.gameContainerHeight + 'px';
+    this.parentElement.append(this.gameContainer);
+
+    var buttonsContainer = this.createButtonsContainer(this.gameContainerHeight);
+    var buttonsContainerWidth = buttonsContainer.offsetWidth;
+
+    this.gameElement = this.common.createElement('div', 'star-invaders');
+    this.gameElement.style.height = this.gameContainerHeight + 'px';
+    this.gameContainer.appendChild(this.gameElement);
+
+    this.statusSideBar = new StatusSidebar(this.common.createElement);
+    this.statusSideBar.createStatusSideBar(this.gameContainer, this.gameContainerHeight);
+
+    var statusContainerWidth = this.statusSideBar.statusSideBarElement.offsetWidth;
+    this.gameContainer.style.width = buttonsContainerWidth + this.gameElement.offsetWidth + statusContainerWidth + 'px';
+
+    this.statusSideBar.createStatusContainer(shooterTypeConstants.PLAYER, 'Player');
+    var playerStatusContainer = this.gameContainer.getElementsByClassName('player-container')[0];
+    playerStatusContainer.style.top = this.statusSideBar.statusSideBarElement.offsetHeight -
+      playerStatusContainer.offsetHeight + 'px';
+  }
+
   render() {
     this.checkBossRound();
     this.background.move();
@@ -186,9 +173,9 @@ class Game {
     this.createDrops();
     this.generateCoins();
     this.setHealthOnAlien();
-    this.moveItems(this.coins, 'coin');
-    this.moveItems(this.healths, 'health');
-    this.moveItems(this.drops, 'drop');
+    this.moveItems(this.coins, itemTypeConstants.COIN);
+    this.moveItems(this.healths, itemTypeConstants.HEALTH);
+    this.moveItems(this.drops, itemTypeConstants.DROP);
 
     this.counter++;
     this.dropCounter++;
@@ -282,28 +269,30 @@ class Game {
   }
 
   setAliensPosition() {
-    if (this.levelProgressCounter < this.levelSettings.generateAlien.length) {
+    if (this.levelProgressCounter < this.levelSettings.generateAlien.length && !this.isBossRound) {
+      console.log(this.isBossRound);
 
       this.levelProgress = this.levelSettings.generateAlien[this.levelProgressCounter];
-
       if (this.counter === this.levelProgress.counter) {
         for (var i = 0; i < this.levelProgress.aliens.length; i++) {
           this.alienCreationInterval = 0;
           for (var j = 0; j < this.levelProgress.aliens[i].alienTypes.length; j++) {
             for (var k = 0; k < this.levelProgress.aliens[i].alienTypes[j].number; k++) {
-              var alienProperties = this.levelProgress.aliens[i].alienTypes[j];
-              var alien = this.createAliens(alienProperties.size, alienProperties.type, this.levelProgress.aliens[i].pattern);
+              if (this.alienCreationCounter < gameConstants.MAX_ALIENS) {
+                var alienProperties = this.levelProgress.aliens[i].alienTypes[j];
+                var alien = this.createAliens(alienProperties.size, alienProperties.type,
+                  this.levelProgress.aliens[i].pattern);
 
-              alien.moveDownInterval = this.alienMoveDownOffset * this.alienCreationCounter * (i + 1);
+                alien.moveDownInterval = this.alienMoveDownOffset * this.alienCreationCounter * (i + 1);
 
-              alien.finalPositionY = this.positionsY[this.positions[this.alienCreationCounter].y];
+                alien.finalPositionY = (this.gameContainerHeight - gameConstants.INITIAL_ALIENS_POSITION_Y_OFFSET) -
+                  (alien.height * this.positions[this.alienCreationCounter].y) -
+                  (gameConstants.ALIENS_POSITION_Y_OFFSET * this.positions[this.alienCreationCounter].y);
 
-              alien.finalPositionX = (alien.width *
-                (this.positions[this.alienCreationCounter].x) + ((this.positions[this.alienCreationCounter].x) * 20));
-              this.alienCreationCounter++;
-
-              if (this.alienCreationCounter === 50) {
-                this.alienCreationCounter = 0;
+                alien.finalPositionX = (alien.width *
+                  (this.positions[this.alienCreationCounter].x) + ((this.positions[this.alienCreationCounter].x) *
+                    gameConstants.ALIENS_POSITION_X_OFFSET));
+                this.alienCreationCounter++;
               }
             }
           }
@@ -319,9 +308,9 @@ class Game {
       var numberOfAliens = this.common.generateRandomValue(this.levelSettings.randomAliens.minimumNumber,
         this.levelSettings.randomAliens.maximumNumber + 1);
       var minimumPatternIndex = 0;
-      var maximumPatternIndex = this.pattern.getRandomAlienPatterns().length;
+      var maximumPatternIndex = this.levelSettings.randomAliens.patterns.length;
       var patternIndex = this.common.generateRandomValue(minimumPatternIndex, maximumPatternIndex);
-      var pattern = this.pattern.getRandomAlienPatterns()[patternIndex];
+      var pattern = this.levelSettings.randomAliens.patterns[patternIndex];
       this.alienCreationInterval = 0;
 
       for (var i = 0; i < numberOfAliens; i++) {
@@ -339,6 +328,10 @@ class Game {
   checkPlayerAlienCollision(index) {
     if (!this.aliens[index].isExploded && this.aliens[index].checkCollision(this.player)) {
       this.aliens[index].alienElement.remove();
+      this.player.health = 1;
+      this.player.shield = 1;
+      this.reduceHealth(shooterTypeConstants.PLAYER, this.player);
+      this.reduceShield(shooterTypeConstants.PLAYER, this.player);
       this.player.isExploded = true;
       this.player.explode();
       this.aliens.splice(index, 1);
@@ -384,12 +377,13 @@ class Game {
   }
 
   createAlienBullet(index) {
-    if ((this.aliens[index].properties.weapon === 'spread' || this.aliens[index].properties.weapon === 'shield-breaker')
+    if ((this.aliens[index].properties.weapon === weaponConstants.SPREAD
+      || this.aliens[index].properties.weapon === weaponConstants.SHIELD_BREAKER)
       && this.aliens[index].health === 1) {
-      this.createBullets('alien', this.aliens[index], this.aliens[index].properties.weapon,
+      this.createBullets(shooterTypeConstants.ALIEN, this.aliens[index], this.aliens[index].properties.weapon,
         this.alienBullets);
     } else {
-      this.createBullet('alien', this.aliens[index], this.alienBullets);
+      this.createBullet(shooterTypeConstants.ALIEN, this.aliens[index], this.alienBullets);
     }
   }
 
@@ -406,12 +400,15 @@ class Game {
           this.aliens[index].isExploded = true;
           if (!this.isBossRound && !this.aliens[index].isRandom) {
             if (this.alienWithHealth === index) {
-              this.generateItemFromAlien('health', this.healths, alienPositionX, alienPositionY, alienWidth);
+              this.generateItemFromAlien(itemTypeConstants.HEALTH, this.healths, alienPositionX,
+                alienPositionY, alienWidth);
             } else {
-              this.generateItemFromAlien('coin', this.coins, alienPositionX, alienPositionY, alienWidth);
+              this.generateItemFromAlien(itemTypeConstants.COIN, this.coins, alienPositionX,
+                alienPositionY, alienWidth);
             }
             this.score += this.aliens[index].properties.score;
             this.scoreElement.innerText = this.score;
+            this.updateHighScore();
             this.noOfAliensShotForCoinsGeneration++;
             if (!this.aliens[index].isChild) {
               this.noOfAliensShot++;
@@ -455,7 +452,7 @@ class Game {
   }
 
   generateItemFromAlien(itemType, items, positionX, positionY, alienWidth) {
-    if(itemType === 'coin') {
+    if(itemType === itemTypeConstants.COIN) {
       var item = new Coin(this.gameElement);
     }else{
       var item = new Health(this.gameElement);
@@ -469,7 +466,7 @@ class Game {
   }
 
   performSpecialProperty(index) {
-    if (this.aliens[index].properties.special === 're-generate') {
+    if (this.aliens[index].properties.special === weaponConstants.REGENERATE) {
       var alienChildProperties = this.aliens[index].properties.children;
       this.generateTwo(this.aliens[index].size, this.aliens[index].type, alienChildProperties,
         this.aliens[index].positionX, this.aliens[index].positionY);
@@ -514,7 +511,7 @@ class Game {
           }
           if (!this.player.isShieldOn) {
             if (this.player.health) {
-              this.reduceHealth('player', this.player);
+              this.reduceHealth(shooterTypeConstants.PLAYER, this.player);
             } else {
               // this.isGameOver = true;
               // this.player.isExploded = true;
@@ -522,7 +519,7 @@ class Game {
               // this.gameOver.createGameOverElement(this.common, this.gameElement);
             }
           } else {
-            this.reduceShield('player', this.player);
+            this.reduceShield(shooterTypeConstants.PLAYER, this.player);
           }
           bullets[i].bulletElement.remove();
           bullets.splice(i, 1);
@@ -575,11 +572,15 @@ class Game {
     this.boss = new Boss(this.gameElement, this.level, this.levelSettings.boss, this.common.generateRandomValue);
     this.boss.createBoss();
     this.isBossCreated = true;
-    this.statusSideBar.createStatusContainer('boss', 'Boss');
+    this.statusSideBar.createStatusContainer(shooterTypeConstants.BOSS, 'Boss');
   }
 
   checkPlayerBossCollision() {
     if (this.boss.checkCollision(this.player)) {
+      this.player.health = 1;
+      this.player.shield = 1;
+      this.reduceHealth(shooterTypeConstants.PLAYER, this.player);
+      this.reduceShield(shooterTypeConstants.PLAYER, this.player);
       this.player.isExploded = true;
       this.player.explode();
       this.isGameOver = true;
@@ -598,10 +599,11 @@ class Game {
   }
 
   createBossBullet() {
-    if ((this.boss.weapon === 'spread' || this.boss.weapon === 'shield-breaker') && this.boss.isMovingDown) {
-      this.createBullets('alien', this.boss, this.boss.weapon, this.bossBullets);
+    if ((this.boss.weapon === weaponConstants.SPREAD
+      || this.boss.weapon === weaponConstants.SHIELD_BREAKER) && this.boss.isMovingDown) {
+      this.createBullets(shooterTypeConstants.ALIEN, this.boss, this.boss.weapon, this.bossBullets);
     } else {
-      this.createBullet('alien', this.boss, this.bossBullets);
+      this.createBullet(shooterTypeConstants.ALIEN, this.boss, this.bossBullets);
     }
   }
 
@@ -624,13 +626,14 @@ class Game {
   updateBossStatus(index) {
     if (this.playerBullets[index].checkCollision(this.boss)) {
       if (this.boss.isShieldOn && this.boss.shield !== 0) {
-        this.reduceShield('boss', this.boss);
+        this.reduceShield(shooterTypeConstants.BOSS, this.boss);
       } else {
-        this.reduceHealth('boss', this.boss);
+        this.reduceHealth(shooterTypeConstants.BOSS, this.boss);
       }
       if (this.boss.health === 0) {
         this.score += this.boss.levelSettings.score;
         this.scoreElement.innerText = this.score;
+        this.updateHighScore();
         this.levelComplete();
       }
       this.playerBullets[index].bulletElement.remove();
@@ -640,9 +643,25 @@ class Game {
 
   levelComplete() {
     var levelComplete = new LevelComplete();
+    if(this.boss.shield) {
+      this.boss.shield = 1;
+      this.reduceShield(shooterTypeConstants.BOSS, this.boss);
+    }
     this.boss.explode();
     this.isLevelComplete = true;
     levelComplete.createLevelCompleteElement(this.gameElement, this.common.createElement, this.level);
+    this.onContinueClick();
+  }
+
+  onContinueClick(){
+    var continueBtn = this.gameElement.getElementsByClassName('continue-btn')[0];
+    continueBtn.onclick = () => {
+      this.level++;
+      this.gameContainer.remove();
+      window.cancelAnimationFrame(this.requestAnimation);
+      this.requestAnimation = window.requestAnimationFrame(this.render.bind(this));
+      this.init();
+    }
   }
 
   createDrops() {
@@ -693,11 +712,11 @@ class Game {
     for (let i = 0; i < items.length; i++) {
       if (items[i].isOutOfGame() || items[i].checkCollision(this.player)) {
         if (items[i].checkCollision(this.player)) {
-          if (itemName === 'coin') {
+          if (itemName === itemTypeConstants.COIN) {
             this.updateCoin(items[i].score)
-          } else if (itemName === 'health') {
+          } else if (itemName === itemTypeConstants.HEALTH) {
             this.updateHealth();
-          } else if (itemName === 'drop') {
+          } else if (itemName === itemTypeConstants.DROP) {
             this.updateDrop(items[i].properties.weapon, items[i].properties.shield)
           }
         }
@@ -713,6 +732,7 @@ class Game {
     this.player.coin += 1;
     this.score += score;
     this.scoreElement.innerText = this.score;
+    this.updateHighScore();
   }
 
   updateHealth() {
@@ -742,10 +762,10 @@ class Game {
   }
 
   createPlayerBullet() {
-    if (this.player.weapon === 'spread' || this.player.weapon === 'shield-breaker') {
-      this.createBullets('player', this.player, this.player.weapon, this.playerBullets);
+    if (this.player.weapon === weaponConstants.SPREAD || this.player.weapon === weaponConstants.SHIELD_BREAKER) {
+      this.createBullets(shooterTypeConstants.PLAYER, this.player, this.player.weapon, this.playerBullets);
     } else {
-      this.createBullet('player', this.player, this.playerBullets);
+      this.createBullet(shooterTypeConstants.PLAYER, this.player, this.playerBullets);
     }
   }
 
@@ -760,7 +780,7 @@ class Game {
 
   createBullet(shooterType, shooter, bullets) {
     var bullet = new Bullet(this.gameElement, shooter, shooter.bulletDirectionY);
-    if (shooterType === 'player') {
+    if (shooterType === shooterTypeConstants.PLAYER) {
       bullet.createBullet(shooterType, shooter.weapon);
     } else {
       bullet.createBullet(shooterType);
@@ -768,38 +788,23 @@ class Game {
     bullets.push(bullet);
   }
 
-  createGame() {
-    var gameContainerHeight = '655';
-    this.gameContainer = this.common.createElement('div', 'star-invaders-container');
-    this.gameContainer.style.height = gameContainerHeight + 'px';
-    this.parentElement.append(this.gameContainer);
-
-    var buttonsContainer = this.createButtonsContainer(gameContainerHeight);
-    var buttonsContainerWidth = buttonsContainer.offsetWidth;
-
-    this.gameElement = this.common.createElement('div', 'star-invaders');
-    this.gameElement.style.height = gameContainerHeight + 'px';
-    this.gameContainer.appendChild(this.gameElement);
-
-    this.statusSideBar = new StatusSidebar(this.common.createElement);
-    this.statusSideBar.createStatusSideBar(this.gameContainer, gameContainerHeight);
-
-    var statusContainerWidth = this.statusSideBar.statusSideBarElement.offsetWidth;
-    this.gameContainer.style.width = buttonsContainerWidth + this.gameElement.offsetWidth + statusContainerWidth + 'px';
-
-    this.statusSideBar.createStatusContainer('player', 'Player');
-    var playerStatusContainer = this.gameContainer.getElementsByClassName('player-container')[0];
-    playerStatusContainer.style.top = this.statusSideBar.statusSideBarElement.offsetHeight -
-      playerStatusContainer.offsetHeight + 'px';
+  updateHighScore(){
+    if(this.score > this.hiScore){
+      this.hiScore = this.score;
+      localStorage.setItem(this.hiScoreId, this.hiScore);
+      this.hiScoreElement.innerText = this.score;
+    }
   }
 
-  createButtonsContainer(gameContainerHeight) {
+  createButtonsContainer() {
     var score = new Score();
     var buttonsContainer = this.common.createElement('div', 'buttons-container');
-    buttonsContainer.style.height = gameContainerHeight + 'px';
+    buttonsContainer.style.height = this.gameContainerHeight + 'px';
     this.gameContainer.appendChild(buttonsContainer);
-    this.scoreElement = score.createScores(buttonsContainer, this.level, this.score, this.hiScore,
+    var scoreElements = score.createScores(buttonsContainer, this.level, this.score, this.hiScore,
       this.common.createElement);
+    this.scoreElement = scoreElements.scoreElement;
+    this.hiScoreElement = scoreElements.hiScoreElement;
     this.createButtons(buttonsContainer);
     return buttonsContainer;
   }
@@ -808,30 +813,19 @@ class Game {
     var pauseButton = this.common.createElement('button', 'pause-btn', 'Pause');
     parentElement.appendChild(pauseButton);
     if (!this.isLevelComplete) {
-      this.pause(pauseButton);
+      this.onPauseClick(pauseButton);
     }
 
     var newGameButton = this.common.createElement('button', 'new-game-btn', 'New Game');
     parentElement.appendChild(newGameButton);
-    this.newGame(newGameButton);
+    this.onNewGameClick(newGameButton);
 
     var menuButton = this.common.createElement('button', 'menu-btn', 'Menu');
     parentElement.appendChild(menuButton);
-    this.goToMenu(menuButton);
+    this.onMenuClick(menuButton);
   }
 
-  newGame(newGameButton) {
-    newGameButton.onclick = () => {
-      this.gameContainer.remove();
-      window.cancelAnimationFrame(this.requestAnimation);
-      this.requestAnimation = window.requestAnimationFrame(this.render.bind(this));
-      this.score = 0;
-      this.isLevelComplete = false;
-      this.init();
-    };
-  }
-
-  pause(pauseButton) {
+  onPauseClick(pauseButton) {
     pauseButton.onmousedown = () => {
       if (this.isPaused) {
         this.isPaused = false;
@@ -842,12 +836,46 @@ class Game {
     };
   }
 
-  goToMenu(menuButton) {
+  onNewGameClick(newGameButton) {
+    newGameButton.onclick = () => {
+      this.score = 0;
+      this.gameContainer.remove();
+      window.cancelAnimationFrame(this.requestAnimation);
+      this.requestAnimation = window.requestAnimationFrame(this.render.bind(this));
+      this.init();
+    };
+  }
+
+  onMenuClick(menuButton) {
     menuButton.onclick = () => {
+      this.level = 1;
+      this.score = 0;
       this.gameContainer.remove();
       window.cancelAnimationFrame(this.requestAnimation);
       this.menu();
     };
+  }
+
+  onMenuLevelClick(){
+    let menuLevelButtons = this.parentElement.getElementsByClassName('menu-level-btn');
+    for (let i = 0; i < menuLevelButtons.length; i++) {
+      menuLevelButtons[i].onclick = (e) => {
+        this.level = +e.currentTarget.dataset.level;
+        this.isBossRound = false;
+        this.startGame();
+      }
+    }
+  }
+
+  onMenuBossRoundClick(){
+    let menuBossRoundButtons = this.parentElement.getElementsByClassName('menu-boss-round-btn');
+    for (let i = 0; i < menuBossRoundButtons.length; i++) {
+      menuBossRoundButtons[i].onclick = (e) => {
+        this.level = +e.currentTarget.dataset.level;
+        this.isBossRound = true;
+        this.startGame();
+      }
+    }
   }
 }
 
